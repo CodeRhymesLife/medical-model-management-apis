@@ -1,10 +1,14 @@
+/* eslint-disable import/imports-first */
+require('babel-core/register');
+require('babel-polyfill');
+
 import mongoose from 'mongoose';
 import util from 'util';
 
 // config should be imported before importing any other file
 import config from './config/config';
 
-import bluebird from 'bluebird'; // eslint-disable-line import/imports-first
+import bluebird from 'bluebird';
 
 import app from './config/express';
 import { logger } from './config/winston';

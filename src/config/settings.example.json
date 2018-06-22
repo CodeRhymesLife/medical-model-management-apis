@@ -1,0 +1,11 @@
+{
+  "headers": {
+    "devEmail": "MedMod-Dev-UserEmail",
+    "idToken": "Authorization",
+    "testIsMaster": "MedMod-Test-IsMaster"
+  },
+  "masterUsers": [
+  ],
+  "oauthApps": [
+  ]
+}
