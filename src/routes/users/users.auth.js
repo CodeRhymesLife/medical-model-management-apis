@@ -1,5 +1,5 @@
 import { OAuth2Client } from 'google-auth-library';
-import status from 'http-status';
+import httpStatus from 'http-status';
 
 import config from '../../config/config';
 import settings from '../../config/settings';
@@ -162,7 +162,7 @@ export const isMaster = async (req, res, next) => {
     next();
   } else {
     logger.req().error(`${LOG_TAG} '${user.email}' is not a master user`);
-    const unauthorizedErr = new APIError('not a master user', status.UNAUTHORIZED);
+    const unauthorizedErr = new APIError('not a master user', httpStatus.UNAUTHORIZED);
     next(unauthorizedErr);
   }
 };

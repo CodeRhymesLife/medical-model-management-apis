@@ -1,6 +1,6 @@
 /** @namespace medmod.database */
 import mongoose from 'mongoose';
-import status from 'http-status';
+import httpStatus from 'http-status';
 import { isEmail } from 'validator';
 
 import settings from '../../config/settings';
@@ -150,7 +150,7 @@ UserSchema.statics = {
     }
 
     logger.req().error(`${LOG_TAG} user with id ${id} does not exist`);
-    const err = new APIError(`user with id ${id} does not exist`, status.NOT_FOUND);
+    const err = new APIError(`user with id ${id} does not exist`, httpStatus.NOT_FOUND);
     throw err;
   },
 
