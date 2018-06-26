@@ -57,58 +57,16 @@ const UserSchema = new mongoose.Schema({
   {
     toObject: {
       transform(doc, ret) {
-        delete ret.accountMemberships; // eslint-disable-line no-param-reassign
-        delete ret.accountInvitations; // eslint-disable-line no-param-reassign
         delete ret.google.id_tokem; // eslint-disable-line no-param-reassign
       },
     },
     toJSON: {
       transform(doc, ret) {
-        delete ret.accountMemberships; // eslint-disable-line no-param-reassign
-        delete ret.accountInvitations; // eslint-disable-line no-param-reassign
         delete ret.google.id_tokem; // eslint-disable-line no-param-reassign
       },
       virtuals: true,
     },
   });
-
-/**
-* The account memberships associated with this user.
-* An account membership is created for users that accept their invitation
-* @type {Array<medmod.database.AccountMembership>}
-*/
-UserSchema.virtual('accountMemberships', {
-  ref: 'AccountMembership',
-  localField: '_id',
-  foreignField: 'user',
-});
-
-/**
-* The invitations associated with this user.
-* An invitation is created for each user invited to be a member of an account.
-* An AccountMembership is created when the user accepts their invitation
-* @type {Array<medmod.database.AccountInvitation>}
-*/
-UserSchema.virtual('accountInvitations', {
-  ref: 'AccountInvitation',
-  localField: 'google.email',
-  foreignField: 'userEmail',
-});
-
-/**
-* A list of the account this user is a member of
-* @type {Array<medmod.database.Account>}
-*/
-UserSchema.virtual('accounts').get(function getAccounts() {
-  if (!this.accountMemberships) { return undefined; }
-
-  const accounts = [];
-  this.accountMemberships.forEach((membership) => {
-    accounts.push(membership.account);
-  });
-
-  return accounts;
-});
 
 /**
 * Returns the user's name
@@ -159,7 +117,7 @@ UserSchema.statics = {
    * @param {string} googleId - The id of the user on google.
    * @param {string} googleName - The name of the user on google.
    * @param {string} googleEmail - The user's gmail.
-   * @returns {Promise<Account, APIError>}
+   * @returns {Promise<User, APIError>}
    */
   async create(googleId, googleName, googleEmail) {
     try {
