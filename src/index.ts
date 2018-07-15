@@ -5,11 +5,15 @@ import util from 'util';
 import config from './config/config';
 
 import bluebird from 'bluebird';
+import pe from 'pretty-error';
 
 import app from './config/express';
 import { logger } from './config/winston';
 
 const LOG_TAG = '[medmod-apis]';
+
+// Start making errors look pretty
+pe.start();
 
 /** Connect to mongo db */
 const connectToDb = async () => {
