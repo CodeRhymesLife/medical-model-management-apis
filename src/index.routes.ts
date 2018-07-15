@@ -17,7 +17,7 @@ const mountRoutes = () => {
   logger.info(`${LOG_TAG} mounting routes`);
 
   // Route definitions
-  const files: string[] = glob.sync('**/*.route.{js,ts}');
+  const files: string[] = glob.sync(`${__dirname}/routes/**/*.route.{js,ts}`);
 
   // Mount routes for each file
   files.forEach((routeFilename: string) => {

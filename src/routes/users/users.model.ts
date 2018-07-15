@@ -16,10 +16,6 @@ export class GoogleUser {
   @prop({ required: true })
   id: string;
 
-  /** Auth token from google */
-  @prop({ required: true })
-  id_token: string;
-
   /** Name of the user */
   @prop({ required: true })
   name: string;
@@ -85,14 +81,15 @@ export class User extends Typegoose {
     static async create(this: ModelType<User> & typeof User, googleId: string, googleName: string, googleEmail: string): Promise <InstanceType<User>> {
     try {
       // eslint-disable-next-line no-use-before-define
-      const user = await UserModel.create({
+      const user = new UserModel({
         'google.id': googleId,
         'google.name': googleName,
         'google.email': googleEmail,
       });
+      const savedUser = await user.save();
 
-      logger.req().info(`${LOG_TAG} Successfully created user '${user._id}' with email '${googleEmail}'`);
-      return user;
+      logger.req().info(`${LOG_TAG} Successfully created user '${savedUser._id}' with email '${googleEmail}'`);
+      return savedUser;
     } catch (err) {
       logger.req().error(`${LOG_TAG} error while creating user with email '${googleEmail}'. Error: ${err}`);
       const unknownError = new APIError(`Unable to create user with email '${googleEmail}'`);
@@ -101,5 +98,5 @@ export class User extends Typegoose {
   }
 }
 
-export const UserModel = new User().getModelForClass(User);
+export const UserModel = new User().getModelForClass(User, { schemaOptions: { toJSON: {virtuals: true } } });
 
