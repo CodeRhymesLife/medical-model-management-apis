@@ -67,17 +67,17 @@ app.use(expressWinston.logger({
   transports,
   meta: true, // optional: log meta data about request (defaults to true)
   msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
-  colorStatus: true, // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
+  colorize: true, // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
 }));
 
 // mount all routes on / path
 app.use('/', routes);
 
 // if error is not an instanceOf APIError, convert it.
-app.use((err, req, res, next) => {
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (err instanceof expressValidation.ValidationError) {
     // validation error contains errors which is an array of error each containing message[]
-    const unifiedErrorMessage = err.errors.map(error => error.messages.join('. ')).join(' and ');
+    const unifiedErrorMessage: string = err.errors.map((error: any) => error.messages.join('. ')).join(' and ');
     const error = new APIError(unifiedErrorMessage, err.status, true);
     return next(error);
   } else if (!(err instanceof APIError)) {
@@ -99,11 +99,12 @@ app.use(expressWinston.errorLogger({
 }));
 
 // error handler, send stacktrace only during development
-app.use((err, req, res, next) => // eslint-disable-line no-unused-vars
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => // eslint-disable-line no-unused-vars
   res.status(err.status).json({
-    message: err.isPublic ? err.message : httpStatus[err.status],
+      message: err.isPublic ? err.message : (<any>httpStatus)[err.status],
     stack: config.env === 'development' ? err.stack : {},
   })
 );
 
 export default app;
+

@@ -9,18 +9,18 @@ const LOG_TAG = '[routes]';
 const router = express.Router(); // eslint-disable-line new-cap
 
 /**
-* Mounts all routes defined in *.route.js files in routes/
-* @example
-*   accounts.route.js routes will be mounted to /accounts
-*/
+ * Mounts all routes defined in *.route.js files in routes/
+ * @example
+ *   accounts.route.js routes will be mounted to /accounts
+ */
 const mountRoutes = () => {
   logger.info(`${LOG_TAG} mounting routes`);
 
   // Route definitions
-  const files = glob.sync('**/*.route.js');
+  const files: string[] = glob.sync('**/*.route.{js,ts}');
 
   // Mount routes for each file
-  files.forEach((routeFilename) => {
+  files.forEach((routeFilename: string) => {
     const relativePath = path.relative(__dirname, routeFilename);
     const routes = require(`./${relativePath}`); // eslint-disable-line global-require
 
@@ -39,3 +39,4 @@ const mountRoutes = () => {
 mountRoutes();
 
 export default router;
+

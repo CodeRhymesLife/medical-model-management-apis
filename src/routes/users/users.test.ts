@@ -13,9 +13,12 @@ chai.config.includeStack = true;
  * root level hooks
  */
 after((done) => {
+    // Need to cast so typescript doesn't complain about modelSchemas line
+  const mongooseCast = <any> mongoose;
+
   // required because https://github.com/Automattic/mongoose/issues/1251#issuecomment-65793092
   mongoose.models = {};
-  mongoose.modelSchemas = {};
+  mongooseCast.modelSchemas = {};
   mongoose.connection.close();
   done();
 });
@@ -33,7 +36,7 @@ describe('## User APIs', () => {
   const fakeIdTokenHeaderValue = JSON.stringify(fakeIdToken);
 
   // User created from id token
-  let createdUser = null;
+  let createdUser: any  = undefined;
 
   describe('# POST /users', async () => {
     it('should create a new user', async () => {
@@ -84,7 +87,7 @@ describe('## User APIs', () => {
       const res = await request(app)
         .delete(`/users/${createdUser._id}`)
         .set(settings.headers.idToken, fakeIdTokenHeaderValue)
-        .set(settings.headers.testIsMaster, true)
+        .set(settings.headers.testIsMaster, 'true')
         .expect(httpStatus.OK);
 
       expect(res.body.name).to.equal(createdUser.name);

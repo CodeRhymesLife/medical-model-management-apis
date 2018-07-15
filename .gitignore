@@ -62,3 +62,5 @@ typings/
 
 # Do not check in settings
 src/config/settings.json
+
+build/

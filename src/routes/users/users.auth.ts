@@ -1,10 +1,12 @@
 import { OAuth2Client } from 'google-auth-library';
 import httpStatus from 'http-status';
+import { Request, Response, NextFunction } from 'express';
+import { InstanceType } from 'typegoose';
 
 import config from '../../config/config';
 import settings from '../../config/settings';
 import { logger } from '../../config/winston';
-import User from './users.model.js';
+import { User, UserModel } from './users.model.js';
 import APIError from '../helpers/APIError';
 
 const LOG_TAG = '[Users.Auth]';
@@ -12,12 +14,23 @@ const LOG_TAG = '[Users.Auth]';
 // Create a google auth client.
 const authClient = new OAuth2Client('', '', '');
 
-/**
- * Verifies the google id token is valid and returns its payload
- * @param {string} idToken - the google id token to verify
- * @returns {Promise<object, Error>}
- */
-export const verifyIdToken = async (req) => {
+/** Data returned from verifyIdToken */
+interface GoogleAuthData {
+  /** Id token returned from google auth */
+  idToken: string;
+
+  /** The user's google id */
+  id: string;
+
+  /** The user's name */
+  name: string;
+
+  /** The user's email */
+  email: string;
+}
+
+/** Verifies the google id token is valid and returns its payload */
+export const verifyIdToken = async (req: Request): Promise<GoogleAuthData> => {
   // Get the google id token from the authorization header or,
   // from the query param
   const idToken = req.get(settings.headers.idToken) || req.query.idToken;
@@ -60,18 +73,14 @@ export const verifyIdToken = async (req) => {
   }
 };
 
-/**
- * Gets the user from the google id token
- * @param {string} idToken - The google id token to get the user from
- */
-const getUserFromIdToken = async (req) => {
+/** Gets the user from the google id token */
+const getUserFromIdToken = async (req: Request): Promise<InstanceType<User>> => {
   try {
     logger.req().info(`${LOG_TAG} verifying id token`);
     const userData = await verifyIdToken(req);
 
     logger.req().info(`${LOG_TAG} retrieving user with email '${userData.email}'`);
-    const user = await User.findOne({ 'google.id': userData.id }).exec();
-
+    const user = await UserModel.findOne({ 'google.id': userData.id }).exec();
     logger.req().info(`${LOG_TAG} successfully retrieved user '${user._id}' with email '${userData.email}'`);
     return user;
   } catch (err) {
@@ -84,11 +93,10 @@ const getUserFromIdToken = async (req) => {
  * Attempts to get a user based on an email address in
  * the request header. The header key is defined in settings.json.
  * This method will only succeed in development mode.
- * @param {object} req
  */
-const getUserFromDevEmail = async (req) => {
-  if (config.env !== 'development' || config.env !== 'test') {
-    return null;
+const getUserFromDevEmail = async (req: Request): Promise<InstanceType<User>> => {
+  if (config.env !== 'development' && config.env !== 'test') {
+    return undefined;
   }
 
   logger.req().info(`${LOG_TAG} attempting to retrieve dev user`);
@@ -96,10 +104,10 @@ const getUserFromDevEmail = async (req) => {
   const userEmail = req.get(settings.headers.devEmail);
   if (!userEmail) {
     logger.req().info(`${LOG_TAG} dev user email not defined`);
-    return null;
+    return undefined;
   }
 
-  const user = await User.findOne({ 'google.email': userEmail });
+  const user = await UserModel.findOne({ 'google.email': userEmail });
 
   if (user) {
     logger.req().info(`${LOG_TAG} found dev user ${user.google.email}`);
@@ -113,10 +121,8 @@ const getUserFromDevEmail = async (req) => {
 /**
  * Gets the user based on their id token or
  * if in development mode an email in a request header.
- * @param {object} req
- * @returns {User}
  */
-const getUser = async (req) => {
+const getUser = async (req: Request): Promise<InstanceType<User>> => {
   // If we're running in development mode this will try and
   // find a user based on an email in the header
   const devUser = await getUserFromDevEmail(req);
@@ -129,13 +135,8 @@ const getUser = async (req) => {
   return getUserFromIdToken(req);
 };
 
-/**
- * Load user and append to req.
- * @param {object} req
- * @param {object} res
- * @param {function} next
- */
-export const load = async (req, res, next) => {
+/** Load user and append to req. */
+export const load = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     req.authedUser = await getUser(req); // eslint-disable-line  no-param-reassign
     return next();
@@ -145,20 +146,15 @@ export const load = async (req, res, next) => {
   }
 };
 
-/**
- * Ensures the user is a master user
- * @param {object} req
- * @param {object} res
- * @param {function} next
- */
-export const isMaster = async (req, res, next) => {
+/** Ensures the user is a master user */
+export const isMaster = async (req: Request, res: Response, next: NextFunction) => {
   const user = req.authedUser;
 
   if (user.isMaster) {
     logger.req().info(`${LOG_TAG} '${user.email}' is a master user`);
     next();
   } else if (config.env === 'test' && req.get(settings.headers.testIsMaster)) {
-    logger.info(`${LOG_TAG} test is master is set`);
+    logger.info(`${LOG_TAG} test is master is set to ${req.get(settings.headers.testIsMaster)}`);
     next();
   } else {
     logger.req().error(`${LOG_TAG} '${user.email}' is not a master user`);
@@ -166,3 +162,4 @@ export const isMaster = async (req, res, next) => {
     next(unauthorizedErr);
   }
 };
+

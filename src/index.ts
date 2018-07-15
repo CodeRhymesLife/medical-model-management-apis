@@ -1,7 +1,3 @@
-/* eslint-disable import/imports-first */
-require('babel-core/register');
-require('babel-polyfill');
-
 import mongoose from 'mongoose';
 import util from 'util';
 
@@ -30,7 +26,7 @@ const connectToDb = async () => {
 
   // print mongoose logs in dev env
   if (config.mongooseDebug) {
-    mongoose.set('debug', (collectionName, method, query, doc) => {
+      mongoose.set('debug', (collectionName: mongoose.Collection, method: Function, query: mongoose.Query<any>, doc: mongoose.Document) => {
       logger.req().info(`${collectionName}.${method}`, util.inspect(query, false, 20), doc);
     });
   }
@@ -44,4 +40,5 @@ app.listen(config.port, () => {
   logger.info(`${LOG_TAG} server started on port ${config.port} (${config.env}).`); // eslint-disable-line no-console
 });
 
-module.exports = app;
+export default app;
+

@@ -1,3 +1,4 @@
+import { NextFunction, Request, Response } from 'express';
 import contextService from 'request-context';
 import winston from 'winston';
 import WinstonContext from 'winston-context';
@@ -23,7 +24,7 @@ const WINSTON_LOGGING_CONFIG = {
       timestamp: true,
       handleExceptions: true,
       json: true,
-      maxsize: 5242880, //5MB
+      maxsize: 5242880, // 5MB
     },
   },
 };
@@ -45,11 +46,6 @@ if (WINSTON_LOGGING_CONFIG.transports.file.enabled) {
   winston.add(winston.transports.File, WINSTON_LOGGING_CONFIG.transports.file);
 }
 
-// Support morgan
-winston.stream = {
-  write: message => winston.req().info(message),
-};
-
 winston.req = () => {
   const reqLogger = contextService.get('request:req.winston');
   if (reqLogger) { return reqLogger; }
@@ -58,7 +54,7 @@ winston.req = () => {
   return winston;
 };
 
-const createReqLogger = (reqId, sessionId) => {
+const createReqLogger = (reqId: string, sessionId: string) => {
   const l = new WinstonContext(winston,
     '',
     {
@@ -75,7 +71,7 @@ const createReqLogger = (reqId, sessionId) => {
 
 export const logger = winston;
 
-export const setupReqLogger = (req, res, next) => {
+export const setupReqLogger = (req: Request, res: Response, next: NextFunction) => {
   contextService.middleware('request')(req, res, () => {
     // eslint-disable-next-line  no-param-reassign
     req.winston = createReqLogger(req.id, req.sessionID || req.session.id);
