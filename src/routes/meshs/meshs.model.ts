@@ -3,6 +3,7 @@ import { MongoError } from 'mongodb';
 import mongoose from "mongoose";
 import {
     arrayProp,
+    instanceMethod,
     InstanceType,
     ModelType,
     prop,
@@ -40,7 +41,7 @@ export class Mesh extends Typegoose {
     version: number;
 
     /** The name of this model */
-    @prop({ required: true, unique: true })
+    @prop({ required: true })
     name: string;
 
     /** A short description of the model */
@@ -68,20 +69,43 @@ export class Mesh extends Typegoose {
     @arrayProp({ itemsRef: MeshPart })
     parts: Ref<MeshPart>[];
 
+    /** Returns whether the given user is authorized to interact with this mesh */
+    @instanceMethod
+    isAuthorized(user: InstanceType<User>): boolean {
+        return this.owner.toString() === user._id.toString();
+    }
+
     /** Gets a model by its id */
     @staticMethod
     static async get(
         this: ModelType<Mesh> & typeof Mesh,
+        user: InstanceType<User>,
         id: string
     ): Promise<InstanceType<Mesh>> {
-        logger.req().info(`${LOG_TAG} attempting to get mesh by id '${id}'`);
+        logger.req().info(`${LOG_TAG} attempting to get mesh by id '${id}' for user '${user.email}'`);
 
         try {
+            logger.req().info(`${LOG_TAG} getting mesh with id ${id}`);
             const mesh = await this.findById(id).exec();
-            logger.req().info(`${LOG_TAG} successfully retrieved mesh '${mesh.name}' by id '${id}'`);
+
+            // If the mesh does not exist return bad request
+            if (!mesh) {
+                logger.req().error(`${LOG_TAG} mesh with id '${id}' does not exist`);
+                const doesNotExistError = new APIError(`Mesh with id ${id} does not exist`, httpStatus.NOT_FOUND);
+                throw doesNotExistError;
+            }
+
+            // Make sure the user is authorized to get this mesh
+            if (!mesh.isAuthorized(user)) {
+                logger.req().error(`${LOG_TAG} user '${user.email}' is not authorized to interact with mesh '${id}'`);
+                const unauthorizedError = new APIError(`User '${user.email}' is not authorized to interact with mesh '${id}'`, httpStatus.UNAUTHORIZED);
+                throw unauthorizedError;
+            }
+
+            logger.req().info(`${LOG_TAG} successfully retrieved mesh '${mesh.name}' by id '${id}' for user '${user.email}'`);
             return mesh;
         } catch (err) {
-            logger.req().error(`${LOG_TAG} unable to retrieve mesh by id '${id}'`);
+            logger.req().error(`${LOG_TAG} unable to retrieve mesh by id '${id}'. Err: ${err}`);
             throw err;
         }
     }
@@ -131,3 +155,4 @@ export class Mesh extends Typegoose {
 export const MeshModel = new Mesh().getModelForClass(Mesh, {
     schemaOptions: { toJSON: { virtuals: true } },
 });
+

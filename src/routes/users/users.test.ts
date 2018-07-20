@@ -4,7 +4,7 @@ import chai from 'chai';
 
 import app from '../../index';
 import settings from '../../config/settings';
-import { fakeIdToken, fakeIdTokenHeaderValue } from '../../tests/testUtils';
+import { testData } from '../../tests/testUtils';
 
 const expect = chai.expect;
 chai.config.includeStack = true;
@@ -17,11 +17,11 @@ describe('## User APIs', () => {
         it('should create a new user', async () => {
             const res = await request(app)
                 .post('/users')
-                .set(settings.headers.idToken, fakeIdTokenHeaderValue)
+                .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.CREATED);
 
-            expect(res.body.name).to.equal(fakeIdToken.name);
-            expect(res.body.email).to.equal(fakeIdToken.email);
+            expect(res.body.name).to.equal(testData.users.one.auth.name);
+            expect(res.body.email).to.equal(testData.users.one.auth.email);
             createdUser = res.body;
         });
     });
@@ -30,7 +30,7 @@ describe('## User APIs', () => {
         it('should get user details', async () => {
             const res = await request(app)
                 .get(`/users/${createdUser._id}`)
-                .set(settings.headers.idToken, fakeIdTokenHeaderValue)
+                .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.OK);
 
             expect(res.body.name).to.equal(createdUser.name);
@@ -40,7 +40,7 @@ describe('## User APIs', () => {
         it('should report error with message - Not found, when user does not exists', async () => {
             const res = await request(app)
                 .get('/users/56c787ccc67fc16ccc1a5e92')
-                .set(settings.headers.idToken, fakeIdTokenHeaderValue)
+                .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.NOT_FOUND);
 
             expect(res.body.message).to.equal('Not Found');
@@ -51,7 +51,7 @@ describe('## User APIs', () => {
         it('should report error with message - Unauthorized - when a non-master user tries to delete', async () => {
             const res = await request(app)
                 .delete(`/users/${createdUser._id}`)
-                .set(settings.headers.idToken, fakeIdTokenHeaderValue)
+                .set(settings.headers.idToken, testData.users.one.idToken)
             // .set(settings.headers.testIsMaster, true) // The testIsMaster request header is not set
                 .expect(httpStatus.UNAUTHORIZED);
 
@@ -61,7 +61,7 @@ describe('## User APIs', () => {
         it('should delete user', async () => {
             const res = await request(app)
                 .delete(`/users/${createdUser._id}`)
-                .set(settings.headers.idToken, fakeIdTokenHeaderValue)
+                .set(settings.headers.idToken, testData.users.one.idToken)
                 .set(settings.headers.testIsMaster, 'true')
                 .expect(httpStatus.OK);
 

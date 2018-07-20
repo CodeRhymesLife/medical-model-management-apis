@@ -22,7 +22,7 @@ router.route('/:modelId')
     .get(MeshModelsCtrl.get)
 
 /* PUT /meshs/:modelId - Update mesh **/
-    .put(MeshModelsCtrl.update)
+    .put(validate(paramValidation.updateMesh), MeshModelsCtrl.update)
 
 /** DELETE /meshs/:moedlId - Delete mesh */
     .delete(MeshModelsCtrl.remove);

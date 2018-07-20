@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
 
 import { logger } from '../../config/winston';
+import APIError from '../helpers/APIError';
 import { Mesh, MeshModel } from './meshs.model';
 
 const LOG_TAG = '[MeshModels.Controller]';
@@ -13,10 +14,15 @@ export default class MeshModelController {
      */
     static async load(req: Request, res: Response, next: NextFunction, id: string) {
         try {
-            req.loadedMesh = await MeshModel.get(id);
+            logger.req().info(`${LOG_TAG} attempting to load mesh ${id} onto request`);
+
+            req.loadedMesh = await MeshModel.get(req.authedUser, id);
+
+            logger.req().info(`${LOG_TAG} successfully loaded mesh ${id} onto request`);
+
             return next();
         } catch (err) {
-            logger.req().error(`${LOG_TAG} Error loading mesh with '${id}' to req`);
+            logger.req().error(`${LOG_TAG} Error loading mesh with '${id}' onto req. Error: ${err}`);
             return next(err);
         }
     }
@@ -26,8 +32,8 @@ export default class MeshModelController {
         const user = req.authedUser;
 
         try {
-            const meshs = MeshModel.find({ owner: user });
-            logger.req().info(`${LOG_TAG} found '${meshs.count}' associated with user ${user.email}`);
+            const meshs = await MeshModel.find({ owner: user }).exec();
+            logger.req().info(`${LOG_TAG} found '${meshs.length}' associated with user ${user.email}`);
             return res.json(meshs);
         } catch (err) {
             logger.req().error(`${LOG_TAG} error loading meshes associated wtih user ${user.email}`);
@@ -58,13 +64,17 @@ export default class MeshModelController {
         const mesh = req.loadedMesh;
 
         try {
+            const getValueIfDefined = (value: string, defaultValue: string) => {
+                return value != undefined ? value : defaultValue;
+            };
+
             mesh.name = req.body.name || mesh.name;
-            mesh.shortDesc = req.body.shortDesc;
-            mesh.longDesc = req.body.longDesc;
+            mesh.shortDesc = getValueIfDefined(req.body.shortDesc, mesh.shortDesc);
+            mesh.longDesc = getValueIfDefined(req.body.longDesc, mesh.longDesc);
 
             const updatedMesh = await mesh.save();
 
-            logger.info(`${LOG_TAG} successfully updated mesh '${updatedMesh.id}' with (new) name '${updatedMesh.name}'`);
+            logger.req().info(`${LOG_TAG} successfully updated mesh '${updatedMesh.id}' with (potentially new) name '${updatedMesh.name}'`);
             return res.json(updatedMesh);
         } catch (err) {
             logger.error(`${LOG_TAG} error while update mesh '${mesh.id}' with name '${mesh.name}'`);
