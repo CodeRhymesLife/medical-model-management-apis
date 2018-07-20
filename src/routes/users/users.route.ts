@@ -1,22 +1,22 @@
 import express from 'express';
 
-import * as usersCtrl from './users.controller';
-import * as usersAuth from './users.auth';
+import UsersCtrl from './users.controller';
+import { UsersAuthUtils } from './users.auth';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
-  /** POST /users - Create new users */
-  .post(usersCtrl.create);
+/** POST /users - Create new users */
+    .post(UsersCtrl.create);
 
 router.route('/:userId')
-  /** GET /users/:userId - Get user */
-  .get(usersCtrl.get)
+/** GET /users/:userId - Get user */
+    .get(UsersCtrl.get)
 
-  /** DELETE /users/:userId - Delete user */
-  .delete(usersAuth.load, usersAuth.isMaster, usersCtrl.remove);
+/** DELETE /users/:userId - Delete user */
+    .delete(UsersAuthUtils.load, UsersAuthUtils.isMaster, UsersCtrl.remove);
 
 /** Attach loadedUser to request when API with userId route parameter is hit */
-router.param('userId', usersCtrl.load);
+router.param('userId', UsersCtrl.load);
 
 export default router;
