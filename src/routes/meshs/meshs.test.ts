@@ -22,6 +22,7 @@ interface MeshData {
     created: any;
 }
 
+/** A collection of data used furing mesh tests */
 interface MeshesTestData {
     /** Data about the first mesh */
     one: MeshData;
