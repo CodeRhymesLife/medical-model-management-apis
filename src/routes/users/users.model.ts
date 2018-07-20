@@ -57,7 +57,7 @@ export class User extends Typegoose {
    * @param {ObjectId} id - The objectId of the user.
    */
   @staticMethod
-    static async get(this: ModelType<User> & typeof User, id: string): Promise<InstanceType<User>> {
+    static async getUser(this: ModelType<User> & typeof User, id: string): Promise<InstanceType<User>> {
     logger.req().info(`${LOG_TAG} attempting to get user by id '${id}'`);
 
     const user = await this.findById(id).exec();
@@ -78,15 +78,14 @@ export class User extends Typegoose {
    * @param {string} googleEmail - The user's gmail.
    */
   @staticMethod
-    static async create(this: ModelType<User> & typeof User, googleId: string, googleName: string, googleEmail: string): Promise <InstanceType<User>> {
+    static async createUser(this: ModelType<User> & typeof User, googleId: string, googleName: string, googleEmail: string): Promise <InstanceType<User>> {
     try {
       // eslint-disable-next-line no-use-before-define
-      const user = new UserModel({
+      const savedUser = await UserModel.create({
         'google.id': googleId,
         'google.name': googleName,
         'google.email': googleEmail,
       });
-      const savedUser = await user.save();
 
       logger.req().info(`${LOG_TAG} Successfully created user '${savedUser._id}' with email '${googleEmail}'`);
       return savedUser;

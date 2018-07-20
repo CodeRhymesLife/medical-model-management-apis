@@ -15,7 +15,7 @@ const LOG_TAG = '[Users.Auth]';
 const authClient = new OAuth2Client('', '', '');
 
 /** Data returned from verifyIdToken */
-interface GoogleAuthData {
+export interface GoogleAuthData {
   /** Id token returned from google auth */
   idToken: string;
 
@@ -138,10 +138,12 @@ const getUser = async (req: Request): Promise<InstanceType<User>> => {
 /** Load user and append to req. */
 export const load = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+      logger.req().info(`${LOG_TAG} loading user onto request`);
     req.authedUser = await getUser(req); // eslint-disable-line  no-param-reassign
+      logger.req().info(`${LOG_TAG} successfully loaded user ${req.authedUser.email} onto request`);
     return next();
   } catch (err) {
-    logger.req().error(`${LOG_TAG} error adding user to req`);
+      logger.req().error(`${LOG_TAG} error loading user onto req. Err: ${err}`);
     return next(err);
   }
 };
