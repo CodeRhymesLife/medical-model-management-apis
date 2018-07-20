@@ -24,7 +24,7 @@
     "mongo:start": "sudo service mongod start",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "precommit": "yarn lint && yarn test",
-    "test": "yarn build && cross-env NODE_ENV=test ./node_modules/.bin/mocha build/**/*.test.js --ui bdd --reporter spec --colors src --recursive",
+    "test": "yarn build && cross-env NODE_ENV=test MONGO_HOST=mongodb://localhost/medmod-test ./node_modules/.bin/mocha build/**/*.test.js --ui bdd --reporter spec --colors src --recursive",
     "test:watch": "yarn test -- --watch",
     "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors server --recursive",
     "test:check-coverage": "yarn test:coverage && istanbul check-coverage",

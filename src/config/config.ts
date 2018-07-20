@@ -1,6 +1,10 @@
 import Joi from 'joi';
 import dotEnv from 'dotenv';
 
+import { logger } from './winston';
+
+const LOG_TAG = '[Config]';
+
 // load vars from .env into PROCESS.ENV
 dotEnv.config();
 
@@ -38,5 +42,7 @@ const config = {
         port: envVars.MONGO_PORT,
     },
 };
+
+logger.info(`${LOG_TAG} successfully loaded config: ${JSON.stringify(config, undefined, 2)}`);
 
 export default config;
