@@ -46,10 +46,10 @@ describe('## User APIs', () => {
 
             // Validate the reponse
             expect(res.body.message).to.equal(`A user with email '${testData.users.one.auth.email}' already exists`);
-         });
-     });
+        });
+    });
 
-    describe('# GET /users/:userId', async () => {
+    describe('# GET /users/:userId', () => {
         it('should get user details for self', async () => {
             // Create the user
             const user = await createUser(testData.users.one);
@@ -91,9 +91,9 @@ describe('## User APIs', () => {
             // Validate the response
             expect(res.body.message).to.equal('Not Found');
         });
-   });
+    });
 
-    describe('# DELETE /users/', async () => {
+    describe('# DELETE /users/', () => {
         it('should report error with message - Unauthorized - when a non-master user tries to delete', async () => {
             // Create the user
             const user = await createUser(testData.users.one);
@@ -102,7 +102,7 @@ describe('## User APIs', () => {
             const res = await request(app)
                 .delete(`/users/${user._id}`)
                 .set(settings.headers.idToken, testData.users.one.idToken)
-                // .set(settings.headers.testIsMaster, true) // The testIsMaster request header is not set
+            // .set(settings.headers.testIsMaster, true) // The testIsMaster request header is not set
                 .expect(httpStatus.UNAUTHORIZED);
 
             // Validate the response message
@@ -122,6 +122,6 @@ describe('## User APIs', () => {
 
             // Validate the reponse
             validateUserResponse(res.body, testData.users.one);
-         });
+        });
     });
 });

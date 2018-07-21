@@ -41,7 +41,7 @@ describe('## Mesh APIs', () => {
         return MeshModel.remove({}).exec();
     });
 
-    describe('# POST /meshes', async () => {
+    describe('# POST /meshes', () => {
         it('should fail validation', async () => {
             // The data used to create the mesh
             // Name is undefined
@@ -91,7 +91,7 @@ describe('## Mesh APIs', () => {
 
     });
 
-    describe('# GET /meshes', async () => {
+    describe('# GET /meshes', () => {
         it('should get list of meshes for user', async () => {
             // Create a series of meshes
             await createMesh(userOne, testData.meshes.one);
@@ -128,7 +128,7 @@ describe('## Mesh APIs', () => {
         });
     });
 
-    describe('# GET /meshes/<id>', async () => {
+    describe('# GET /meshes/<id>', () => {
         it('should get mesh by id', async () => {
             // Create a mesh for user one
             const mesh = await createMesh(userOne, testData.meshes.one);
@@ -170,9 +170,9 @@ describe('## Mesh APIs', () => {
             // Validate the response message
             expect(res.body.message).to.equal('Not Found');
         });
-     });
+    });
 
-    describe('# UPDATE /meshes', async () => {
+    describe('# UPDATE /meshes', () => {
         it('should update mesh', async () => {
             // Create a mesh for user one
             const mesh = await createMesh(userOne, testData.meshes.one);
@@ -233,7 +233,7 @@ describe('## Mesh APIs', () => {
             };
 
             // Attempt to update the mesh with an invalid property
-             const res = await request(app)
+            const res = await request(app)
                 .put(`/meshes/${mesh._id}`)
                 .send(update)
                 .set(settings.headers.idToken, testData.users.one.idToken)
@@ -267,7 +267,7 @@ describe('## Mesh APIs', () => {
         });
     });
 
-    describe('# DELETE /meshes', async () => {
+    describe('# DELETE /meshes', () => {
         it('should fail to delete mesh that does not exist', async () => {
             // Attempt to delete a mesh that doesn't exist
             const res = await request(app)
@@ -309,5 +309,5 @@ describe('## Mesh APIs', () => {
             // Validate the response
             validateMeshResponse(res.body, testData.meshes.one);
         });
-   });
+    });
 });
