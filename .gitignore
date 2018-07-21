@@ -64,3 +64,6 @@ typings/
 src/config/settings.json
 
 build/
+
+# Mongo data dir
+data/
