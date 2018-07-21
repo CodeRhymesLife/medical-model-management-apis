@@ -1,5 +1,6 @@
 /** @namespace medmod */
 import mongoose from 'mongoose';
+import { MongoError } from 'mongodb';
 import { InstanceType, ModelType, prop, staticMethod, Typegoose } from 'typegoose';
 import httpStatus from 'http-status';
 import { isEmail } from 'validator';
@@ -80,7 +81,7 @@ export class User extends Typegoose {
     @staticMethod
     static async createUser(this: ModelType<User> & typeof User, googleId: string, googleName: string, googleEmail: string): Promise <InstanceType<User>> {
         try {
-            // eslint-disable-next-line no-use-before-define
+            logger.req().info(`${LOG_TAG} attempting to create user with with email '${googleEmail}'`);
             const savedUser = await UserModel.create({
                 'google.id': googleId,
                 'google.name': googleName,
@@ -90,9 +91,15 @@ export class User extends Typegoose {
             logger.req().info(`${LOG_TAG} Successfully created user '${savedUser._id}' with email '${googleEmail}'`);
             return savedUser;
         } catch (err) {
-            logger.req().error(`${LOG_TAG} error while creating user with email '${googleEmail}'. Error: ${err}`);
-            const unknownError = new APIError(`Unable to create user with email '${googleEmail}'`);
-            return Promise.reject(unknownError);
+            if (err instanceof MongoError && err.code == 11000) {
+                logger.req().error(`${LOG_TAG} could not create user with email ${googleEmail} because a user with that email already exists`);
+                const duplicateKeyError = new APIError(`A user with email '${googleEmail}' already exists`, httpStatus.BAD_REQUEST, true);
+                return Promise.reject(duplicateKeyError);
+            } else {
+                logger.req().error(`${LOG_TAG} error while creating user with email '${googleEmail}'. Error: ${err}`);
+                const unknownError = new APIError(`Unable to create user with email '${googleEmail}'`);
+                return Promise.reject(unknownError);
+            }
         }
     }
 }

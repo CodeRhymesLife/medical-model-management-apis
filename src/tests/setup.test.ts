@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
 
+import { logger } from '../config/winston';
+
+const LOG_TAG = '[TestSetup]';
+
 /** Cleans the mongoose object after each test */
 export const cleanMongoose = () => {
     // Need to cast so typescript doesn't complain about modelSchemas line
@@ -11,12 +15,13 @@ export const cleanMongoose = () => {
     mongoose.connection.close();
 };
 
+/** Cleans mongoose and drops the db after all tests have run */
+after(async () => {
+    logger.info(`${LOG_TAG} cleaning up mongo DB`);
 
-
-/** Cleans mongoose after each test */
-after((done) => {
+    await mongoose.connection.db.dropDatabase();
     cleanMongoose();
-    done();
+    return Promise.resolve();
 });
 
 

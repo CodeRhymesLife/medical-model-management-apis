@@ -33,6 +33,7 @@ export default class UsersController {
         const userData = await UsersAuthUtils.verifyIdToken(req);
 
         try {
+            logger.req().info(`${LOG_TAG} attempting to create user with with email '${userData.email}'`);
             const user = await UserModel.createUser(userData.id, userData.name, userData.email);
 
             logger.req().info(`${LOG_TAG} successfully created user '${user._id}' with email '${userData.email}'`);

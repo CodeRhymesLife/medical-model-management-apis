@@ -13,8 +13,8 @@ chai.config.includeStack = true;
 describe('## User APIs', () => {
     /** Validates the response retruend from one of the /users APIs */
     const validateUserResponse = (responseObj: any, expected: TestUser): void => {
-        expect(responseObj.body.name).to.equal(expected.auth.name);
-        expect(responseObj.body.email).to.equal(expected.auth.email);
+        expect(responseObj.name).to.equal(expected.auth.name);
+        expect(responseObj.email).to.equal(expected.auth.email);
     };
 
     /** Remove all users after each test */
@@ -22,9 +22,9 @@ describe('## User APIs', () => {
         return UserModel.remove({});
     });
 
-    describe('# POST /users', async () => {
-        // Create a new user
+    describe('# POST /users', () => {
         it('should create a new user', async () => {
+            // Create a new user
             const res = await request(app)
                 .post('/users')
                 .set(settings.headers.idToken, testData.users.one.idToken)
@@ -32,14 +32,28 @@ describe('## User APIs', () => {
 
             // Validate the reponse
             validateUserResponse(res.body, testData.users.one);
+        });
+
+        it('should fail to create a new user with the same email as an old user', async () => {
+            // Create a user with user one's info
+            await createUser(testData.users.one);
+
+            // Create a new user
+            const res = await request(app)
+                .post('/users')
+                .set(settings.headers.idToken, testData.users.one.idToken)  // Attempt to create user one again
+                .expect(httpStatus.BAD_REQUEST);
+
+            // Validate the reponse
+            expect(res.body.message).to.equal(`A user with email '${testData.users.one.auth.email}' already exists`);
          });
-    });
+     });
 
     describe('# GET /users/:userId', async () => {
-        // Create the user
-        const user = await createUser(testData.users.one);
-
         it('should get user details for self', async () => {
+            // Create the user
+            const user = await createUser(testData.users.one);
+
             // Get the user's details
             const res = await request(app)
                 .get(`/users/${user._id}`)
