@@ -21,7 +21,7 @@ export class GoogleUser {
     name: string;
 
     /** User's email */
-    @prop({ required: true })
+    @prop({ required: true, unique: true })
     email: string;
 }
 

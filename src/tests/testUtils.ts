@@ -1,4 +1,6 @@
 import { InstanceType } from 'typegoose';
+
+import { Mesh, MeshModel } from '../routes/meshes/meshes.model';
 import { GoogleAuthData } from '../routes/users/users.auth';
 import { User, UserModel } from '../routes/users/users.model';
 
@@ -48,6 +50,10 @@ export interface TestData {
 
     /** A collectino of test meshes */
     meshes: TestMeshCollection;
+
+
+    /** An invalid database id */
+    invalidId: string;
 }
 
 /** Auth data for the first test user */
@@ -93,6 +99,8 @@ export const testData: TestData = {
             longDesc: undefined,
         }
     },
+
+    invalidId: '5b52594de29d171ae09642da',
 };
 
 /** Creates a test user based on the specified token values */
@@ -100,7 +108,7 @@ export const createUser = (testUser: TestUser): Promise<InstanceType<User>> => {
     return UserModel.createUser(testUser.auth.id, testUser.auth.name, testUser.auth.email);
 };
 
-/** Deleted a test user based on the specified token values */
-export const deleteUser = async (testUser: TestUser): Promise<InstanceType<User>> => {
-    return UserModel.remove({ 'google.id': testUser.auth.id}).exec();
+/** Creates a test mesh based on the specified data */
+export const createMesh = (owner: InstanceType<User>, testMesh: TestMesh): Promise<InstanceType<Mesh>> => {
+    return MeshModel.createMesh(owner, testMesh.name, testMesh.shortDesc, testMesh.longDesc);
 };

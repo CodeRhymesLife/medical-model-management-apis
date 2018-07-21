@@ -1,188 +1,204 @@
 import request from 'supertest-as-promised';
 import httpStatus from 'http-status';
 import chai from 'chai';
+import { InstanceType } from 'typegoose';
 
 import app from '../../index';
 import settings from '../../config/settings';
-import { createUser, deleteUser, testData, TestMesh } from '../../tests/testUtils';
+import { createMesh, createUser, testData, TestMesh } from '../../tests/testUtils';
+import { Mesh, MeshModel } from './meshes.model';
+import { User } from '../users/users.model';
 
 const expect = chai.expect;
 chai.config.includeStack = true;
 
-/**
- * Data about an individual mesh including the
- * data it was created with and the instance that was
- * created
- */
-interface MeshData {
-    /** Data used to create and update the mesh */
-    data: TestMesh;
-
-    /** The created mesh */
-    created: any;
-}
-
-/** A collection of data used furing mesh tests */
-interface MeshesTestData {
-    /** Data about the first mesh */
-    one: MeshData;
-
-    /** Data about the second mesh */
-    two: MeshData;
-
-    /** An invalid mesh id */
-    invalidId: string;
-}
-
-// A collection of data we will use during this test
-const meshData: MeshesTestData = {
-    one: {
-        data: Object.assign({}, testData.meshes.one),
-        created: undefined,
-    },
-
-    two: {
-        data: Object.assign({}, testData.meshes.two),
-        created: undefined,
-    },
-
-    invalidId: '5b52594de29d171ae09642da',
-};
-
 describe('## Mesh APIs', () => {
-    /** Creates a test user */
+    // Test users
+    let userOne: InstanceType<User> = undefined;
+    let userTwo: InstanceType<User> = undefined;
+
+    /** Validates that the response returned from the /meshes API contains the correct data */
+    const validateMeshResponse = (responseObj: any, expected: TestMesh): void => {
+        expect(responseObj.name).to.equal(expected.name);
+        expect(responseObj.shortDesc).to.equal(expected.shortDesc);
+        expect(responseObj.longDesc).to.equal(expected.longDesc);
+    };
+
+    /** Creates test users */
     before(async () => {
-        await createUser(testData.users.one);
-        return createUser(testData.users.two);
+        userOne = await createUser(testData.users.one);
+        userTwo = await createUser(testData.users.two);
     });
 
-    /** Delete the test user */
+    /** Deletes test users */
     after(async () => {
-        await deleteUser(testData.users.one);
-        return deleteUser(testData.users.two);
+        await userOne.remove();
+        await userTwo.remove();
+    });
+
+    /** Deletes all meshes after each test */
+    afterEach(() => {
+        return MeshModel.remove({}).exec();
     });
 
     describe('# POST /meshes', async () => {
         it('should fail validation', async () => {
+            // The data used to create the mesh
+            // Name is undefined
+            const createData = {
+                name: undefined,
+                shortDesc: testData.meshes.one.shortDesc,
+                longDesc: testData.meshes.one.longDesc,
+            };
+
+            // Attempt to create a mesh without a name
             const res = await request(app)
                 .post('/meshes')
                 .set(settings.headers.idToken, testData.users.one.idToken)
-                .send({
-                    // no name
-                    shortDesc: meshData.one.data.shortDesc,
-                    longDesc: meshData.one.data.longDesc,
-                })
+                .send(createData)
                 .expect(httpStatus.BAD_REQUEST);
 
+            // Validate the response message is informative
             expect(res.body.message).to.equal('"name" is required');
         });
 
-        it('should create a new mesh for user 1', async () => {
+        it('should create a new mesh', async () => {
+            // Create the mesh
             const res = await request(app)
                 .post('/meshes')
                 .set(settings.headers.idToken, testData.users.one.idToken)
-                .send(meshData.one.data)
+                .send(testData.meshes.one)
                 .expect(httpStatus.CREATED);
 
-            expect(res.body.name).to.equal(meshData.one.data.name);
-            expect(res.body.shortDesc).to.equal(meshData.one.data.shortDesc);
-            expect(res.body.longDesc).to.equal(meshData.one.data.longDesc);
-            meshData.one.created = res.body;
+            // Validate the response
+            validateMeshResponse(res.body, testData.meshes.one);
         });
 
-        it('should create a new mesh for user 2', async () => {
+        it('should create a new mesh with the same information as a mesh that already exists', async () => {
+            // Create a mesh
+            await createMesh(userOne, testData.meshes.one);
+
+            // Create a mesh with the same data
             const res = await request(app)
                 .post('/meshes')
-                .set(settings.headers.idToken, testData.users.two.idToken)
-                .send(meshData.two.data)
+                .set(settings.headers.idToken, testData.users.one.idToken)
+                .send(testData.meshes.one)
                 .expect(httpStatus.CREATED);
 
-            expect(res.body.name).to.equal(meshData.two.data.name);
-            expect(res.body.shortDesc).to.equal(meshData.two.data.shortDesc);
-            expect(res.body.longDesc).to.equal(meshData.two.data.longDesc);
-            meshData.two.created = res.body;
+            // Validate the response
+            validateMeshResponse(res.body, testData.meshes.one);
         });
 
     });
 
     describe('# GET /meshes', async () => {
-        it('should get list of meshes for user 1', async () => {
+        it('should get list of meshes for user', async () => {
+            // Create a series of meshes
+            await createMesh(userOne, testData.meshes.one);
+            await createMesh(userOne, testData.meshes.two);
+
+            // Get a list of the meshes
             const res = await request(app)
                 .get(`/meshes`)
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.OK);
 
-            expect(res.body.length).to.equal(1);
-            expect(res.body[0].name).to.equal(meshData.one.data.name);
-            expect(res.body[0].shortDesc).to.equal(meshData.one.data.shortDesc);
-            expect(res.body[0].longDesc).to.equal(meshData.one.data.longDesc);
+            // Validate that each meshs was returned
+            expect(res.body.length).to.equal(2);
+            validateMeshResponse(res.body[0], testData.meshes.one);
+            validateMeshResponse(res.body[1], testData.meshes.two);
         });
 
-        it('should get list of meshes for user 2', async () => {
+        it('should get user one meshes by not user two', async () => {
+            // Create a mesh for user one
+            await createMesh(userOne, testData.meshes.one);
+
+            // Create a mesh for user two
+            await createMesh(userTwo, testData.meshes.two);
+
+            // Get a list of the meshes for user one
             const res = await request(app)
                 .get(`/meshes`)
-                .set(settings.headers.idToken, testData.users.two.idToken)
+                .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.OK);
 
+            // Validate that only user one's mesh was returned
             expect(res.body.length).to.equal(1);
-            expect(res.body[0].name).to.equal(meshData.two.data.name);
-            expect(res.body[0].shortDesc).to.equal(meshData.two.data.shortDesc);
-            expect(res.body[0].longDesc).to.equal(meshData.two.data.longDesc);
+            validateMeshResponse(res.body[0], testData.meshes.one);
         });
     });
 
     describe('# GET /meshes/<id>', async () => {
-        it('should get mesh for user 1', async () => {
+        it('should get mesh by id', async () => {
+            // Create a mesh for user one
+            const mesh = await createMesh(userOne, testData.meshes.one);
+
+            // Get the mesh by its id
             const res = await request(app)
-                .get(`/meshes/${meshData.one.created._id}`)
+                .get(`/meshes/${mesh._id}`)
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.OK);
 
-            expect(res.body.name).to.equal(meshData.one.data.name);
-            expect(res.body.shortDesc).to.equal(meshData.one.data.shortDesc);
-            expect(res.body.longDesc).to.equal(meshData.one.data.longDesc);
-        });
-
-        it('should get mesh for user 2', async () => {
-            const res = await request(app)
-                .get(`/meshes/${meshData.two.created._id}`)
-                .set(settings.headers.idToken, testData.users.two.idToken)
-                .expect(httpStatus.OK);
-
-            expect(res.body.name).to.equal(meshData.two.data.name);
-            expect(res.body.shortDesc).to.equal(meshData.two.data.shortDesc);
-            expect(res.body.longDesc).to.equal(meshData.two.data.longDesc);
+            // Validate the response
+            validateMeshResponse(res.body, testData.meshes.one);
         });
 
         it('should fail when user 1 tries to retrieve mesh owned by user 2', async () => {
+            // Create a mesh for user one
+            await createMesh(userOne, testData.meshes.one);
+
+            // Create a mesh for user two
+            const userTwoMesh = await createMesh(userTwo, testData.meshes.two);
+
+            // Send a request from user one and try to get user two's mesh
             const res = await request(app)
-                .get(`/meshes/${meshData.two.created._id}`)                  // User one does not own user 2's mesh
-                .set(settings.headers.idToken, testData.users.one.idToken)  // User one does not own user 2's mesh)
+                .get(`/meshes/${userTwoMesh._id}`)                          // User one does not own user 2's mesh
+                .set(settings.headers.idToken, testData.users.one.idToken)  // User one does not own user 2's mesh
                 .expect(httpStatus.UNAUTHORIZED);
 
+            // Validate repsonse message
             expect(res.body.message).to.equal('Unauthorized');
         });
-    });
+
+        it('should fail when user tries to get a mesh that does not exist', async () => {
+            // Try to get a mesh that doesn't exist
+            const res = await request(app)
+                .get(`/meshes/${testData.invalidId}`)
+                .set(settings.headers.idToken, testData.users.one.idToken)
+                .expect(httpStatus.NOT_FOUND);
+
+            // Validate the response message
+            expect(res.body.message).to.equal('Not Found');
+        });
+     });
 
     describe('# UPDATE /meshes', async () => {
-        it('should update mesh name', async () => {
-            // Change the long description
-            meshData.one.data.longDesc = `${meshData.one.data.longDesc} ${meshData.one.data.longDesc}`;
+        it('should update mesh', async () => {
+            // Create a mesh for user one
+            const mesh = await createMesh(userOne, testData.meshes.one);
 
+            // The updates to save
+            const update: TestMesh = {
+                name: 'New name',
+                shortDesc: 'short description',
+                longDesc: 'some very long description. Mamma I made it!',
+            };
+
+            // Save the update
             const res = await request(app)
-                .put(`/meshes/${meshData.one.created._id}`)
-                .send({ longDesc: meshData.one.data.longDesc })
+                .put(`/meshes/${mesh._id}`)
+                .send(update)
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.OK);
 
-            expect(res.body.name).to.equal(meshData.one.data.name);
-            expect(res.body.shortDesc).to.equal(meshData.one.data.shortDesc);
-            expect(res.body.longDesc).to.equal(meshData.one.data.longDesc);
+            // Validate the response contains the update
+            validateMeshResponse(res.body, update);
         });
 
         it('should fail to update mesh that does not exist', async () => {
+            // Attempt to update a mesh that does not exist
             const res = await request(app)
-                .put(`/meshes/${meshData.invalidId}`) // Invalid mesh id
+                .put(`/meshes/${testData.invalidId}`) // Invalid mesh id
                 .send({ longDesc: 'updated long desc' })
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.NOT_FOUND);
@@ -191,9 +207,16 @@ describe('## Mesh APIs', () => {
         });
 
         it('should fail to update mesh when no data passed to server', async () => {
+            // Create a mesh for user one
+            const mesh = await createMesh(userOne, testData.meshes.one);
+
+            // No new data will be sent to the server
+            const update = {};
+
+            // Attempt to update the mesh with no data
             const res = await request(app)
-                .put(`/meshes/${meshData.one.created._id}`)
-                .send({ /* No props */ })
+                .put(`/meshes/${mesh._id}`)
+                .send(update)
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.BAD_REQUEST);
 
@@ -201,65 +224,90 @@ describe('## Mesh APIs', () => {
         });
 
         it('should fail to update mesh with invalid property', async () => {
-            const res = await request(app)
-                .put(`/meshes/${meshData.one.created._id}`)
-                .send({ invalidProperty: 'invalidProperty'})
+            // Create a mesh for user one
+            const mesh = await createMesh(userOne, testData.meshes.one);
+
+            // Update has invalid property
+            const update = {
+                invalidProperty: 'This property key is invalid',
+            };
+
+            // Attempt to update the mesh with an invalid property
+             const res = await request(app)
+                .put(`/meshes/${mesh._id}`)
+                .send(update)
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.BAD_REQUEST);
 
+            // Validate the response message
             expect(res.body.message).to.equal('"value" must contain at least one of [name, shortDesc, longDesc]');
         });
 
         it('should fail to update mesh when user does not own mesh', async () => {
+            // Create a mesh for user one
+            await createMesh(userOne, testData.meshes.one);
+
+            // Create a mesh for user two
+            const userTwoMesh = await createMesh(userTwo, testData.meshes.two);
+
+            // An update with valid properties
+            const update = {
+                name: 'new Name',
+            };
+
+            // Attempt to update user two's mesh using user one's credentials
             const res = await request(app)
-                .put(`/meshes/${meshData.one.created._id}`)                  // User 2 does not own mesh one
-                .send({ longDesc: 'valid long desc'})
-                .set(settings.headers.idToken, testData.users.two.idToken)  // User 2 does not own mesh one
+                .put(`/meshes/${userTwoMesh._id}`)                          // User 1 does not own mesh two
+                .send(update)
+                .set(settings.headers.idToken, testData.users.one.idToken)  // User 1 does not own mesh two
                 .expect(httpStatus.UNAUTHORIZED);
 
+            // Validate the response message
             expect(res.body.message).to.equal('Unauthorized');
         });
     });
 
     describe('# DELETE /meshes', async () => {
         it('should fail to delete mesh that does not exist', async () => {
+            // Attempt to delete a mesh that doesn't exist
             const res = await request(app)
-                .delete(`/meshes/${meshData.invalidId}`) // Invalid mesh id
+                .delete(`/meshes/${testData.invalidId}`) // Invalid mesh id
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.NOT_FOUND);
 
+            // Validate the response
             expect(res.body.message).to.equal('Not Found');
         });
 
-        it('should fail to update mesh when user does not own mesh', async () => {
+        it('should fail to delete mesh when user does not own mesh', async () => {
+            // Create a mesh for user one
+            await createMesh(userOne, testData.meshes.one);
+
+            // Create a mesh for user two
+            const userTwoMesh = await createMesh(userTwo, testData.meshes.two);
+
+            // Attempt to delete user two's mesh with user one's credentials
             const res = await request(app)
-                .delete(`/meshes/${meshData.one.created._id}`)               // User 2 does not own mesh one
-                .set(settings.headers.idToken, testData.users.two.idToken)  // User 2 does not own mesh one
+                .delete(`/meshes/${userTwoMesh._id}`)                       // User 1 does not own mesh two
+                .set(settings.headers.idToken, testData.users.one.idToken)  // User 1 does not own mesh two
                 .expect(httpStatus.UNAUTHORIZED);
 
+            // Validate response message
             expect(res.body.message).to.equal('Unauthorized');
         });
 
-        it('should delete mesh for user 1', async () => {
+        it('should delete mesh owned by user', async () => {
+            // Create a mesh for user one
+            const mesh = await createMesh(userOne, testData.meshes.one);
+
+            // Delete the mesh
             const res = await request(app)
-                .delete(`/meshes/${meshData.one.created._id}`)
+                .delete(`/meshes/${mesh._id}`)
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.OK);
 
-            expect(res.body.name).to.equal(meshData.one.data.name);
-            expect(res.body.shortDesc).to.equal(meshData.one.data.shortDesc);
-            expect(res.body.longDesc).to.equal(meshData.one.data.longDesc);
+            // Validate the response
+            validateMeshResponse(res.body, testData.meshes.one);
         });
-
-        it('should delete mesh for user 2', async () => {
-            const res = await request(app)
-                .delete(`/meshes/${meshData.two.created._id}`)
-                .set(settings.headers.idToken, testData.users.two.idToken)
-                .expect(httpStatus.OK);
-
-            expect(res.body.name).to.equal(meshData.two.data.name);
-            expect(res.body.shortDesc).to.equal(meshData.two.data.shortDesc);
-            expect(res.body.longDesc).to.equal(meshData.two.data.longDesc);
-        });
-    });
+   });
 });
