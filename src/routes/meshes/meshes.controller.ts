@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 
 import { logger } from '../../config/winston';
 import APIError from '../helpers/APIError';
-import { Mesh, MeshModel } from './meshs.model';
+import { Mesh, MeshModel } from './meshes.model';
 
 const LOG_TAG = '[MeshModels.Controller]';
 
@@ -27,14 +27,14 @@ export default class MeshModelController {
         }
     }
 
-    /** List the meshs associated with the given user */
+    /** List the meshes associated with the given user */
     static async list(req: Request, res: Response, next: NextFunction) {
         const user = req.authedUser;
 
         try {
-            const meshs = await MeshModel.find({ owner: user }).exec();
-            logger.req().info(`${LOG_TAG} found '${meshs.length}' associated with user ${user.email}`);
-            return res.json(meshs);
+            const meshes = await MeshModel.find({ owner: user }).exec();
+            logger.req().info(`${LOG_TAG} found '${meshes.length}' associated with user ${user.email}`);
+            return res.json(meshes);
         } catch (err) {
             logger.req().error(`${LOG_TAG} error loading meshes associated wtih user ${user.email}`);
             return next(err);

@@ -2,7 +2,7 @@ import { InstanceType } from "typegoose"
 import { LoggerInstance } from "winston"
 
 import { User } from "../routes/users/users.model"
-import { Mesh } from "../routes/meshs/meshs.model"
+import { Mesh } from "../routes/meshes/meshes.model"
 
 declare module "express" {
     export interface Request {

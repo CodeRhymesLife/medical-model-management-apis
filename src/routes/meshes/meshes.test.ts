@@ -62,10 +62,10 @@ describe('## Mesh APIs', () => {
         return deleteUser(testData.users.two);
     });
 
-    describe('# POST /meshs', async () => {
+    describe('# POST /meshes', async () => {
         it('should fail validation', async () => {
             const res = await request(app)
-                .post('/meshs')
+                .post('/meshes')
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .send({
                     // no name
@@ -79,7 +79,7 @@ describe('## Mesh APIs', () => {
 
         it('should create a new mesh for user 1', async () => {
             const res = await request(app)
-                .post('/meshs')
+                .post('/meshes')
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .send(meshData.one.data)
                 .expect(httpStatus.CREATED);
@@ -92,7 +92,7 @@ describe('## Mesh APIs', () => {
 
         it('should create a new mesh for user 2', async () => {
             const res = await request(app)
-                .post('/meshs')
+                .post('/meshes')
                 .set(settings.headers.idToken, testData.users.two.idToken)
                 .send(meshData.two.data)
                 .expect(httpStatus.CREATED);
@@ -105,10 +105,10 @@ describe('## Mesh APIs', () => {
 
     });
 
-    describe('# GET /meshs', async () => {
+    describe('# GET /meshes', async () => {
         it('should get list of meshes for user 1', async () => {
             const res = await request(app)
-                .get(`/meshs`)
+                .get(`/meshes`)
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.OK);
 
@@ -120,7 +120,7 @@ describe('## Mesh APIs', () => {
 
         it('should get list of meshes for user 2', async () => {
             const res = await request(app)
-                .get(`/meshs`)
+                .get(`/meshes`)
                 .set(settings.headers.idToken, testData.users.two.idToken)
                 .expect(httpStatus.OK);
 
@@ -131,10 +131,10 @@ describe('## Mesh APIs', () => {
         });
     });
 
-    describe('# GET /meshs/<id>', async () => {
+    describe('# GET /meshes/<id>', async () => {
         it('should get mesh for user 1', async () => {
             const res = await request(app)
-                .get(`/meshs/${meshData.one.created._id}`)
+                .get(`/meshes/${meshData.one.created._id}`)
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.OK);
 
@@ -145,7 +145,7 @@ describe('## Mesh APIs', () => {
 
         it('should get mesh for user 2', async () => {
             const res = await request(app)
-                .get(`/meshs/${meshData.two.created._id}`)
+                .get(`/meshes/${meshData.two.created._id}`)
                 .set(settings.headers.idToken, testData.users.two.idToken)
                 .expect(httpStatus.OK);
 
@@ -156,7 +156,7 @@ describe('## Mesh APIs', () => {
 
         it('should fail when user 1 tries to retrieve mesh owned by user 2', async () => {
             const res = await request(app)
-                .get(`/meshs/${meshData.two.created._id}`)                  // User one does not own user 2's mesh
+                .get(`/meshes/${meshData.two.created._id}`)                  // User one does not own user 2's mesh
                 .set(settings.headers.idToken, testData.users.one.idToken)  // User one does not own user 2's mesh)
                 .expect(httpStatus.UNAUTHORIZED);
 
@@ -164,13 +164,13 @@ describe('## Mesh APIs', () => {
         });
     });
 
-    describe('# UPDATE /meshs', async () => {
+    describe('# UPDATE /meshes', async () => {
         it('should update mesh name', async () => {
             // Change the long description
             meshData.one.data.longDesc = `${meshData.one.data.longDesc} ${meshData.one.data.longDesc}`;
 
             const res = await request(app)
-                .put(`/meshs/${meshData.one.created._id}`)
+                .put(`/meshes/${meshData.one.created._id}`)
                 .send({ longDesc: meshData.one.data.longDesc })
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.OK);
@@ -182,7 +182,7 @@ describe('## Mesh APIs', () => {
 
         it('should fail to update mesh that does not exist', async () => {
             const res = await request(app)
-                .put(`/meshs/${meshData.invalidId}`) // Invalid mesh id
+                .put(`/meshes/${meshData.invalidId}`) // Invalid mesh id
                 .send({ longDesc: 'updated long desc' })
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.NOT_FOUND);
@@ -192,7 +192,7 @@ describe('## Mesh APIs', () => {
 
         it('should fail to update mesh when no data passed to server', async () => {
             const res = await request(app)
-                .put(`/meshs/${meshData.one.created._id}`)
+                .put(`/meshes/${meshData.one.created._id}`)
                 .send({ /* No props */ })
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.BAD_REQUEST);
@@ -202,7 +202,7 @@ describe('## Mesh APIs', () => {
 
         it('should fail to update mesh with invalid property', async () => {
             const res = await request(app)
-                .put(`/meshs/${meshData.one.created._id}`)
+                .put(`/meshes/${meshData.one.created._id}`)
                 .send({ invalidProperty: 'invalidProperty'})
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.BAD_REQUEST);
@@ -212,7 +212,7 @@ describe('## Mesh APIs', () => {
 
         it('should fail to update mesh when user does not own mesh', async () => {
             const res = await request(app)
-                .put(`/meshs/${meshData.one.created._id}`)                  // User 2 does not own mesh one
+                .put(`/meshes/${meshData.one.created._id}`)                  // User 2 does not own mesh one
                 .send({ longDesc: 'valid long desc'})
                 .set(settings.headers.idToken, testData.users.two.idToken)  // User 2 does not own mesh one
                 .expect(httpStatus.UNAUTHORIZED);
@@ -221,10 +221,10 @@ describe('## Mesh APIs', () => {
         });
     });
 
-    describe('# DELETE /meshs', async () => {
+    describe('# DELETE /meshes', async () => {
         it('should fail to delete mesh that does not exist', async () => {
             const res = await request(app)
-                .delete(`/meshs/${meshData.invalidId}`) // Invalid mesh id
+                .delete(`/meshes/${meshData.invalidId}`) // Invalid mesh id
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.NOT_FOUND);
 
@@ -233,7 +233,7 @@ describe('## Mesh APIs', () => {
 
         it('should fail to update mesh when user does not own mesh', async () => {
             const res = await request(app)
-                .delete(`/meshs/${meshData.one.created._id}`)               // User 2 does not own mesh one
+                .delete(`/meshes/${meshData.one.created._id}`)               // User 2 does not own mesh one
                 .set(settings.headers.idToken, testData.users.two.idToken)  // User 2 does not own mesh one
                 .expect(httpStatus.UNAUTHORIZED);
 
@@ -242,7 +242,7 @@ describe('## Mesh APIs', () => {
 
         it('should delete mesh for user 1', async () => {
             const res = await request(app)
-                .delete(`/meshs/${meshData.one.created._id}`)
+                .delete(`/meshes/${meshData.one.created._id}`)
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .expect(httpStatus.OK);
 
@@ -253,7 +253,7 @@ describe('## Mesh APIs', () => {
 
         it('should delete mesh for user 2', async () => {
             const res = await request(app)
-                .delete(`/meshs/${meshData.two.created._id}`)
+                .delete(`/meshes/${meshData.two.created._id}`)
                 .set(settings.headers.idToken, testData.users.two.idToken)
                 .expect(httpStatus.OK);
 
