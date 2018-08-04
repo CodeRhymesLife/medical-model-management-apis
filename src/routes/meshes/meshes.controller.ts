@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
+import multer from 'multer';
 
 import { logger } from '../../config/winston';
 import APIError from '../helpers/APIError';
 import { Mesh, MeshModel } from './meshes.model';
+import { MeshStorage } from './meshes.storage';
 
 const LOG_TAG = '[MeshModels.Controller]';
 
@@ -49,7 +51,17 @@ export default class MeshModelController {
     /** Create new mesh from the passed in files */
     static async create (req: Request, res: Response, next: NextFunction) {
         try {
-            const createdMesh = await MeshModel.createMesh(req.authedUser, req.body.name, req.body.shortDesc, req.body.longDesc);
+            // Get the uploaded files
+            const files = <Express.Multer.File[]>req.files;
+
+            // Save metadata about the mesh
+            const createdMesh = await MeshModel.createMesh(
+                req.authedUser,
+                req.body.name,
+                req.body.shortDesc,
+                req.body.longDesc,
+                files
+            );
 
             logger.req().info(`${LOG_TAG} successfully created mesh ${createdMesh._id} for user '${req.authedUser.email}'`);
             return res.status(httpStatus.CREATED).json(createdMesh);

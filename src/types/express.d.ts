@@ -1,25 +1,25 @@
-import { InstanceType } from "typegoose"
-import { LoggerInstance } from "winston"
+import { InstanceType } from 'typegoose'
+import { LoggerInstance } from 'winston'
 
-import { User } from "../routes/users/users.model"
-import { Mesh } from "../routes/meshes/meshes.model"
+import { User } from '../routes/users/users.model'
+import { Mesh } from '../routes/meshes/meshes.model'
 
 declare module "express" {
     export interface Request {
         /** The authenticated user */
         authedUser: InstanceType<User>
 
-            /** The loaded mesh */
-            loadedMesh: InstanceType<Mesh>
+        /** Request id */
+        id: string
 
-            /**
-             * The user who's id matches the :userId
-             * parameter when calling the /users API
-             */
-            loadedUser: InstanceType<User>
+        /** The loaded mesh */
+        loadedMesh: InstanceType<Mesh>
 
-            /** Request id */
-            id: string
+        /**
+         * The user who's id matches the :userId
+         * parameter when calling the /users API
+         */
+        loadedUser: InstanceType<User>
 
         /** Request logger */
         winston: any

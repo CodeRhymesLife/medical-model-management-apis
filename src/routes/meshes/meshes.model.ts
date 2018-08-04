@@ -1,6 +1,9 @@
 /** @namespace medmod.apis */
+import fs from 'fs-extra';
+import Grid from 'gridfs-stream';
 import { MongoError } from 'mongodb';
 import mongoose from "mongoose";
+import path from 'path';
 import {
     arrayProp,
     instanceMethod,
@@ -13,21 +16,150 @@ import {
 } from "typegoose";
 import httpStatus from "http-status";
 
-import { logger } from "../../config/winston";
-import APIError from "../helpers/APIError";
-import { User } from "../users/users.model";
+import APIError from '../helpers/APIError';
+import { logger } from '../../config/winston';
+import { MeshStorage } from './meshes.storage';
+import { User } from '../users/users.model';
 
 const LOG_TAG = "[MeshModels.Model]";
 
-/** Represents a part of a mesh, like an aorta */
-export class MeshPart extends Typegoose {}
 
 /** Mesh states */
-export enum ResourceState {
+export enum MeshFileExtensions {
+    BLEND = 'blend',
+    FBX = 'fbx',
+    OBJ = 'obj',
+    MTL = 'mtl',
+    PNG = 'png',
+    JPG = 'jpg',
+}
+
+/** Represents a gridfs file */
+export class GridFSFile extends Typegoose {
+    /** The file's name */
+    @prop({ required: true })
+    filename: string;
+
+    /** The type of the file's content. Used like mimetype */
+    @prop({ required: true })
+    content_type: string;
+
+    /** Saves original file to gridfs */
+    @staticMethod
+    static saveFileToGridFS(
+        this: ModelType<GridFSFile> & typeof GridFSFile,
+        file: Express.Multer.File
+    ): Promise<InstanceType<GridFSFile>> {
+        return new Promise((fulfill, reject) => {
+            // The mongodb instance created when the mongoose.connection is opened
+            const db = mongoose.connection.db;
+
+            // The native mongo driver used by mongoose
+            const mongoDriver = mongoose.mongo;
+
+            // Create a gridfs-stream
+            const gfs = Grid(db, mongoDriver);
+
+            // Store the file in gridfs
+            const writestream = gfs.createWriteStream({
+                filename: file.originalname,
+                mode: 'w',
+                content_type: file.mimetype,
+            });
+            fs.createReadStream(file.path).pipe(writestream);
+
+            // Once we're written to gridfs delete the file from the file system and fulfill the response
+            writestream.on('close', async (savedFile) => {
+                logger.info(`${LOG_TAG} successfully wrote file '${file.originalname}' to gridfs`);
+                fulfill(savedFile);
+            });
+
+            // If there's an error, reject
+            writestream.on('error', (err) => {
+                logger.error(`${LOG_TAG} unable to save file '${file.originalname}' to gridfs. Error: ${err}`);
+                reject(err);
+            });
+        });
+    }
+
+}
+
+/** Represents an OBJ and MTL file */
+export class OBJMTLPair extends Typegoose {
+    /** The obj file */
+    @prop({ required: true })
+    obj: Ref<GridFSFile>;
+
+    /** The mtl file */
+    @prop({ required: true })
+    mtl: Ref<GridFSFile>;
+}
+
+/** File associated with the mesh */
+export class MeshFileCollection extends Typegoose {
+    /** Array of associated files */
+    @arrayProp({ itemsRef: GridFSFile })
+    originalFiles: Ref<GridFSFile>[];
+
+    /** Blend file */
+    @prop({ required: true })
+    blendFile: Ref<GridFSFile>;
+
+    /** List of obj and mtl files */
+    @arrayProp({ itemsRef: OBJMTLPair })
+    objMtlFiles: Ref<OBJMTLPair>[];
+
+    /** Saves the given files in the DB and returns a mesh file collection */
+    @staticMethod
+    static async saveFiles(
+        this: ModelType<MeshFileCollection> & typeof MeshFileCollection,
+        files: Express.Multer.File[],
+    ): Promise<InstanceType<MeshFileCollection>> {
+        logger.info(`${LOG_TAG} Attempting to save mesh files`);
+
+        if (files.length <= 0) {
+            // An explination for why I used 400 instead of 422
+            // https://stackoverflow.com/questions/16133923/400-vs-422-response-to-post-of-data
+            logger.warn(`${LOG_TAG} attempted to upload a mesh without any files`);
+            throw new APIError('No mesh files detected', httpStatus.BAD_REQUEST);
+        }
+
+        // Save each file to the db
+        const originalFiles = new GridFSFile[files.length];
+        for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+            const file = files[fileIndex];
+            const meshFile = await GridFSFileModel.saveFileToGridFS(file);
+
+            // Delete the file after it's saved
+            await MeshStorage.deleteFile(file);
+
+            // Save a reference to the file so we can create a collection
+            originalFiles.push(meshFile);
+        }
+
+        try {
+            // Return a mesh file collection
+            const meshFileCollection = await MeshFileCollectionModel.create({
+                originalFiles,
+            });
+
+            logger.info(`${LOG_TAG} successfully saved mesh file collection ${meshFileCollection._id}`);
+
+            return meshFileCollection;
+        } catch (err) {
+            const fileIds: string[] = originalFiles.map(origFile => origFile.id);
+            logger.error(`${LOG_TAG} unable to save mesh file collection for files [${fileIds.join(',')}]`);
+            throw new APIError('Unable to save files', httpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+}
+
+/** Mesh states */
+export enum ResourceStates {
     DELETED = 'deleted',
-        INVALID = 'invalid',
-        PROCESSING = 'processing',
-        READY = 'ready',
+    INVALID = 'invalid',
+    PROCESSING = 'processing',
+    READY = 'ready',
 }
 
 /** Represents a Mesh model */
@@ -53,9 +185,9 @@ export class Mesh extends Typegoose {
     /** The state of the model */
     @prop({
         required: true,
-        enum: ResourceState,
+        enum: Object.keys(ResourceStates).map(key => ResourceStates[key]),
     })
-    state: ResourceState;
+    state: ResourceStates;
 
     /** The date the model was created */
     @prop({ default: Date.now })
@@ -65,9 +197,9 @@ export class Mesh extends Typegoose {
     @prop({ default: Date.now })
     lastAccessed: Date;
 
-    /** Array of model parts */
-    @arrayProp({ itemsRef: MeshPart })
-    parts: Ref<MeshPart>[];
+    /** Files associated with this mesh */
+    @prop({ required: true })
+    files: Ref<MeshFileCollection>;
 
     /** Returns whether the given user is authorized to interact with this mesh */
     @instanceMethod
@@ -111,7 +243,7 @@ export class Mesh extends Typegoose {
     }
 
     /**
-     * Create user
+     * Create mesh
      * @param {string} name - The name of the mesh
      * @param {string} shortDesc - a short description of the mesh
      * @param {string} longDesc - a long description of the mesh
@@ -122,9 +254,12 @@ export class Mesh extends Typegoose {
         owner: InstanceType<User>,
         name: string,
         shortDesc: string,
-        longDesc: string
+        longDesc: string,
+        files: Express.Multer.File[],
     ): Promise<InstanceType<Mesh>> {
         logger.info(`${LOG_TAG} creating new mesh with name '${name}'`);
+
+        const meshFileCollection = MeshFileCollectionModel.saveFiles(files);
 
         try {
             const savedMesh = await MeshModel.create({
@@ -132,8 +267,9 @@ export class Mesh extends Typegoose {
                 name,
                 shortDesc,
                 longDesc,
+                files: meshFileCollection,
                 version: 1,
-                state: ResourceState.PROCESSING,
+                state: ResourceStates.PROCESSING,
             });
 
             logger.req().info(`${LOG_TAG} Successfully created mesh '${savedMesh._id}' owned by user '${owner.email}'`);
@@ -155,4 +291,16 @@ export class Mesh extends Typegoose {
 export const MeshModel = new Mesh().getModelForClass(Mesh, {
     schemaOptions: { toJSON: { virtuals: true } },
 });
+
+export const MeshFileCollectionModel = new MeshFileCollection().getModelForClass(MeshFileCollection, {
+    schemaOptions: { toJSON: { virtuals: true } },
+});
+
+export const GridFSFileModel = new GridFSFile().getModelForClass(GridFSFile, {
+    schemaOptions: {
+        collection: 'fs.files',
+        toJSON: { virtuals: true }
+    },
+});
+
 

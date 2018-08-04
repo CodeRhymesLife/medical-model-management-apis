@@ -3,6 +3,7 @@ import validate from 'express-validation';
 
 import paramValidation from '../../config/param-validation';
 import MeshModelsCtrl from './meshes.controller';
+import { MeshStorage } from './meshes.storage';
 import { UsersAuthUtils } from '../users/users.auth';
 
 const router = express.Router(); // eslint-disable-line new-cap
@@ -15,7 +16,10 @@ router.route('/')
     .get(MeshModelsCtrl.list)
 
 /** POST /users - Create a new mesh */
-    .post(validate(paramValidation.createMesh), MeshModelsCtrl.create);
+    .post(validate(paramValidation.createMesh),
+        MeshStorage.uploadFilesToTempDir,
+        MeshModelsCtrl.create
+    );
 
 router.route('/:modelId')
 /** GET /meshes/:modelId - Get mesh by id */

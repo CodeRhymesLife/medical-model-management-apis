@@ -5,8 +5,16 @@ import { InstanceType } from 'typegoose';
 
 import app from '../../index';
 import settings from '../../config/settings';
-import { createMesh, createUser, testData, TestMesh } from '../../tests/testUtils';
+import {
+    createMesh,
+    createTestFile,
+    createUser,
+    TestCollateral,
+    testData,
+    TestMesh
+} from '../../tests/testUtils';
 import { Mesh, MeshModel } from './meshes.model';
+import { FieldName } from './meshes.storage';
 import { User } from '../users/users.model';
 
 const expect = chai.expect;
@@ -56,6 +64,7 @@ describe('## Mesh APIs', () => {
                 .post('/meshes')
                 .set(settings.headers.idToken, testData.users.one.idToken)
                 .send(createData)
+                .attach(FieldName, testData.meshes.one.file.path)
                 .expect(httpStatus.BAD_REQUEST);
 
             // Validate the response message is informative
@@ -182,6 +191,7 @@ describe('## Mesh APIs', () => {
                 name: 'New name',
                 shortDesc: 'short description',
                 longDesc: 'some very long description. Mamma I made it!',
+                file: createTestFile(TestCollateral.CUBEFBX),
             };
 
             // Save the update

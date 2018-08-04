@@ -1,6 +1,8 @@
+import rootPath from 'app-root-path';
 import { InstanceType } from 'typegoose';
 
 import { Mesh, MeshModel } from '../routes/meshes/meshes.model';
+import { MeshStorage } from '../routes/meshes/meshes.storage';
 import { GoogleAuthData } from '../routes/users/users.auth';
 import { User, UserModel } from '../routes/users/users.model';
 
@@ -32,7 +34,25 @@ export interface TestMesh {
 
     /** A long description of the mesh */
     longDesc: string;
+
+    /** Path to test mesh */
+    file: Express.Multer.File;
 }
+
+/** An enum of files in the test collateral dir */
+export enum TestCollateral {
+    CUBEFBX = 'cube.fbx',
+}
+
+/** Creates a test mesh file */
+export const createTestFile = (file: TestCollateral): Express.Multer.File => {
+    const filename = TestCollateral[file];
+    return <Express.Multer.File><any>{
+        mimetype: 'text',
+        originalname: filename,
+        path: `${rootPath}/testCollateral/${filename}`,
+    };
+};
 
 /** A collection of test meshes */
 export interface TestMeshCollection {
@@ -91,12 +111,14 @@ export const testData: TestData = {
             name: 'Test Mesh 1',
             shortDesc: 'This is a short description',
             longDesc: 'This is a really, really, really long description that\'s not actually all that long',
+            file: createTestFile(TestCollateral.CUBEFBX),
         },
 
         two: {
             name: 'Test Mesh 2',
             shortDesc: undefined,
             longDesc: undefined,
+            file: createTestFile(TestCollateral.CUBEFBX),
         }
     },
 
@@ -109,6 +131,16 @@ export const createUser = (testUser: TestUser): Promise<InstanceType<User>> => {
 };
 
 /** Creates a test mesh based on the specified data */
-export const createMesh = (owner: InstanceType<User>, testMesh: TestMesh): Promise<InstanceType<Mesh>> => {
-    return MeshModel.createMesh(owner, testMesh.name, testMesh.shortDesc, testMesh.longDesc);
+export const createMesh = async (owner: InstanceType<User>, testMesh: TestMesh): Promise<InstanceType<Mesh>> => {
+    const files = <Express.Multer.File[]>[];
+    files.push(<Express.Multer.File><any>(testMesh.file));
+
+    return MeshModel.createMesh(
+        owner,
+        testMesh.name,
+        testMesh.shortDesc,
+        testMesh.longDesc,
+        files
+    );
 };
+
