@@ -15,21 +15,25 @@
     "yarn": ">=1.7.0"
   },
   "scripts": {
-    "start": "yarn dev:start",
+    "start": "yarn deploy:dev",
     "dev:start": "yarn build && cross-env NODE_ENV=development nodemon build/index.js",
     "build": "yarn lint && yarn build-ts",
-    "build-ts": "tsc && ./node_modules/.bin/copyfiles -u 1 src/config/settings.json build",
+    "build-ts": "rimraf build && tsc && ./node_modules/.bin/copyfiles -u 1 src/config/settings.json build",
     "prod:start": "yarn build && cross-env NODE_ENV=production pm2 start build --name medical-model-manager-apis && pm2 logs medical-model-manager-apis",
     "prod:stop": "pm2 delete medical-model-manager-apis",
     "mongo:start": "sudo service mongod start",
     "mongo:stop": "sudo service mongod stop",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "precommit": "yarn lint && yarn test",
-    "test": "yarn build && yarn mongo:start && cross-env NODE_ENV=test ./node_modules/.bin/mocha build/**/*.test.js --ui bdd --reporter spec --colors src --recursive && yarn mongo:stop",
+    "precommit": "yarn lint && yarn deploy:test",
+    "test": "yarn build && cross-env NODE_ENV=test ./node_modules/.bin/mocha build/**/*.test.js --ui bdd --reporter spec --colors src --recursive",
     "test:watch": "yarn test -- --watch",
     "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors server --recursive",
     "test:check-coverage": "yarn test:coverage && istanbul check-coverage",
-    "report-coverage": "coveralls < ./coverage/lcov.info"
+    "report-coverage": "coveralls < ./coverage/lcov.info",
+    "deploy": "sudo docker-compose up",
+    "deploy:clean": "sudo docker rm apis",
+    "deploy:dev": "sudo docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
+    "deploy:test": "sudo docker-compose -f docker-compose.yml -f docker-compose.test.yml run apis"
   },
   "keywords": [
     "express",

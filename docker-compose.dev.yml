@@ -1,0 +1,4 @@
+version: "2"
+services:
+  apis:
+      command: yarn dev:start

@@ -8,6 +8,7 @@ services:
       - "3000:3000"
     links:
       - mongo
+    command: yarn prod:start
   mongo:
     container_name: mongo
     image: mongo
