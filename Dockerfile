@@ -5,4 +5,3 @@ COPY package.json /usr/src/medmod/apis
 RUN npm install
 COPY . /usr/src/medmod/apis
 EXPOSE 3000
-CMD [ "npm", "start" ]

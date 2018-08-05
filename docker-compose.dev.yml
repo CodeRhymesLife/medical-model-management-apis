@@ -1,4 +1,4 @@
 version: "2"
 services:
   apis:
-      command: yarn dev:start
+      command: yarn local:dev:start

@@ -2,4 +2,4 @@ version: "2"
 services:
   apis:
     restart: "no"
-    command: yarn test
+    command: yarn local:test
