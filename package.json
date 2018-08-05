@@ -19,7 +19,7 @@
     "lint": "yarn local:lint",
     "test": "yarn deploy:build && yarn deploy:test",
     "deploy:prod": "sudo docker-compose up",
-    "deploy:build": "sudo docker-compose build apis",
+    "deploy:build": "sudo docker-compose rm apis && sudo docker-compose build apis",
     "deploy:dev": "sudo docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
     "deploy:test": "sudo docker-compose -f docker-compose.yml -f docker-compose.test.yml run apis",
     "local:dev:start": "yarn local:build && cross-env NODE_ENV=development nodemon build/index.js",
