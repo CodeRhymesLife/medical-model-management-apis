@@ -18,7 +18,7 @@
     "start": "yarn deploy:dev",
 
     "lint": "yarn local:lint",
-    "test": "yarn deploy:test",
+    "test": "yarn deploy:build && yarn deploy:test",
  
     "deploy:prod": "sudo docker-compose up",
     "deploy:build": "sudo docker-compose build apis",
