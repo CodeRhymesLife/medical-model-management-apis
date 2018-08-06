@@ -29,7 +29,7 @@
     "local:prod:start": "yarn local:build && cross-env NODE_ENV=production pm2 start build --name medical-model-manager-apis && pm2 logs medical-model-manager-apis",
     "local:prod:stop": "pm2 delete medical-model-manager-apis",
     "local:report-coverage": "coveralls < ./coverage/lcov.info",
-    "local:test": "yarn local:build && cross-env NODE_ENV=test MONGO_HOST=mongodb://mongo:27017/medmod-test ./node_modules/.bin/mocha \"build/**/*.test.js\" --ui bdd --reporter spec --colors src --recursive",
+    "local:test": "yarn local:build && cross-env NODE_ENV=test MONGO_HOST=mongodb://mongo:27017/medmod-test ./node_modules/.bin/mocha \"build/**/*.test.js\" --ui bdd --reporter spec --colors src --recursive --exit",
     "local:test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors server --recursive",
     "local:test:check-coverage": "yarn local:test:coverage && istanbul check-coverage",
     "precommit": "yarn lint && yarn test"
