@@ -128,7 +128,7 @@ export class MeshFileCollection extends Typegoose {
             // An explination for why I used 400 instead of 422
             // https://stackoverflow.com/questions/16133923/400-vs-422-response-to-post-of-data
             logger.warn(`${LOG_TAG} attempted to upload a mesh without any files`);
-            throw new APIError('No mesh files detected', httpStatus.BAD_REQUEST);
+            throw new APIError('No mesh files detected', httpStatus.BAD_REQUEST, true);
         }
 
         // Save each file to the db

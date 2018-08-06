@@ -79,6 +79,21 @@ describe('## Mesh APIs', () => {
             expect(res.body.message).to.equal('"name" is not allowed to be empty');
         });
 
+        it('should fail validation when no files are uploaded', async () => {
+            const testMeshWithoutFile = <TestMesh>Object.create(testData.meshes.one);
+            testMeshWithoutFile.file = undefined;
+
+            // Attempt to create a mesh without a name
+            const res = await request(app)
+                .post('/meshes')
+                .set(settings.headers.idToken, testData.users.one.idToken)
+                .attachTestMesh(testMeshWithoutFile)
+                .expect(httpStatus.BAD_REQUEST);
+
+            // Validate the response message is informative
+            expect(res.body.message).to.equal('No mesh files detected');
+        });
+
         it('should create a new mesh', async () => {
             // Create the mesh
             const res = await request(app)
