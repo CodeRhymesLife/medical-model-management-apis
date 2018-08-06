@@ -18,7 +18,7 @@ describe('## User APIs', () => {
 
     /** Remove all users after each test */
     afterEach(() => {
-        return UserModel.remove({});
+        return UserModel.remove({}).exec();
     });
 
     describe('# POST /users', () => {

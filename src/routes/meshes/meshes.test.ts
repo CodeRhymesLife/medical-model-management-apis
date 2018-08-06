@@ -35,12 +35,13 @@ describe('## Mesh APIs', () => {
     before(async () => {
         userOne = await createUser(testData.users.one);
         userTwo = await createUser(testData.users.two);
+        return Promise.resolve();
     });
 
     /** Deletes test users */
     after(async () => {
         await userOne.remove();
-        await userTwo.remove();
+        return userTwo.remove();
     });
 
     /** Deletes all meshes after each test */
