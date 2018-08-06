@@ -1,9 +1,9 @@
 /** @namespace medmod.apis */
-import fs from 'fs-extra';
 import Grid from 'gridfs-stream';
 import { MongoError } from 'mongodb';
 import mongoose from "mongoose";
 import path from 'path';
+import streamifier from 'streamifier';
 import {
     arrayProp,
     instanceMethod,
@@ -50,6 +50,8 @@ export class GridFSFile extends Typegoose {
         this: ModelType<GridFSFile> & typeof GridFSFile,
         file: Express.Multer.File
     ): Promise<InstanceType<GridFSFile>> {
+        logger.info(`${LOG_TAG} saving file to gridfs`);
+
         return new Promise((fulfill, reject) => {
             // The mongodb instance created when the mongoose.connection is opened
             const db = mongoose.connection.db;
@@ -60,25 +62,30 @@ export class GridFSFile extends Typegoose {
             // Create a gridfs-stream
             const gfs = Grid(db, mongoDriver);
 
-            // Store the file in gridfs
-            const writestream = gfs.createWriteStream({
-                filename: file.originalname,
-                mode: 'w',
-                content_type: file.mimetype,
-            });
-            fs.createReadStream(file.path).pipe(writestream);
+            try {
+                // Store the file in gridfs
+                const writestream = gfs.createWriteStream({
+                    filename: file.originalname,
+                    mode: 'w',
+                    content_type: file.mimetype,
+                });
+                streamifier.createReadStream(file.buffer).pipe(writestream);
 
-            // Once we're written to gridfs delete the file from the file system and fulfill the response
-            writestream.on('close', async (savedFile) => {
-                logger.info(`${LOG_TAG} successfully wrote file '${file.originalname}' to gridfs`);
-                fulfill(savedFile);
-            });
+                // Once we're written to gridfs delete the file from the file system and fulfill the response
+                writestream.on('close', async (savedFile) => {
+                    logger.info(`${LOG_TAG} successfully wrote file '${file.originalname}' to gridfs`);
+                    fulfill(savedFile);
+                });
 
-            // If there's an error, reject
-            writestream.on('error', (err) => {
+                // If there's an error, reject
+                writestream.on('error', (err) => {
+                    logger.error(`${LOG_TAG} unable to save file '${file.originalname}' to gridfs. Error: ${err}`);
+                    reject(err);
+                });
+            } catch (err) {
                 logger.error(`${LOG_TAG} unable to save file '${file.originalname}' to gridfs. Error: ${err}`);
-                reject(err);
-            });
+                throw new APIError(`Unable to save file ${file.originalname}`, httpStatus.INTERNAL_SERVER_ERROR);
+            }
         });
     }
 
@@ -102,7 +109,7 @@ export class MeshFileCollection extends Typegoose {
     originalFiles: Ref<GridFSFile>[];
 
     /** Blend file */
-    @prop({ required: true })
+    @prop()
     blendFile: Ref<GridFSFile>;
 
     /** List of obj and mtl files */
@@ -115,7 +122,7 @@ export class MeshFileCollection extends Typegoose {
         this: ModelType<MeshFileCollection> & typeof MeshFileCollection,
         files: Express.Multer.File[],
     ): Promise<InstanceType<MeshFileCollection>> {
-        logger.info(`${LOG_TAG} Attempting to save mesh files`);
+        logger.info(`${LOG_TAG} Attempting to save '${files.length}' mesh files`);
 
         if (files.length <= 0) {
             // An explination for why I used 400 instead of 422
@@ -125,13 +132,10 @@ export class MeshFileCollection extends Typegoose {
         }
 
         // Save each file to the db
-        const originalFiles = new GridFSFile[files.length];
+        const originalFiles: InstanceType<GridFSFile>[] = [];
         for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
             const file = files[fileIndex];
             const meshFile = await GridFSFileModel.saveFileToGridFS(file);
-
-            // Delete the file after it's saved
-            await MeshStorage.deleteFile(file);
 
             // Save a reference to the file so we can create a collection
             originalFiles.push(meshFile);
@@ -147,8 +151,8 @@ export class MeshFileCollection extends Typegoose {
 
             return meshFileCollection;
         } catch (err) {
-            const fileIds: string[] = originalFiles.map(origFile => origFile.id);
-            logger.error(`${LOG_TAG} unable to save mesh file collection for files [${fileIds.join(',')}]`);
+            const fileIds: string[] = originalFiles.map(origFile => origFile._id);
+            logger.error(`${LOG_TAG} unable to save mesh file collection for files [${fileIds.join(',')}]. Error: ${err}`);
             throw new APIError('Unable to save files', httpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -259,7 +263,7 @@ export class Mesh extends Typegoose {
     ): Promise<InstanceType<Mesh>> {
         logger.info(`${LOG_TAG} creating new mesh with name '${name}'`);
 
-        const meshFileCollection = MeshFileCollectionModel.saveFiles(files);
+        const meshFileCollection = await MeshFileCollectionModel.saveFiles(files);
 
         try {
             const savedMesh = await MeshModel.create({
@@ -302,5 +306,4 @@ export const GridFSFileModel = new GridFSFile().getModelForClass(GridFSFile, {
         toJSON: { virtuals: true }
     },
 });
-
 

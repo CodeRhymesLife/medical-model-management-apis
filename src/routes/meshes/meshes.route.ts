@@ -16,8 +16,9 @@ router.route('/')
     .get(MeshModelsCtrl.list)
 
 /** POST /users - Create a new mesh */
-    .post(validate(paramValidation.createMesh),
+    .post(
         MeshStorage.uploadFilesToTempDir,
+        validate(paramValidation.createMesh),
         MeshModelsCtrl.create
     );
 

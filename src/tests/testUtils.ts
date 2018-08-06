@@ -1,8 +1,10 @@
 import rootPath from 'app-root-path';
+import fs from 'fs-extra';
+import supertest from 'supertest';
 import { InstanceType } from 'typegoose';
 
 import { Mesh, MeshModel } from '../routes/meshes/meshes.model';
-import { MeshStorage } from '../routes/meshes/meshes.storage';
+import { FieldName, MeshStorage } from '../routes/meshes/meshes.storage';
 import { GoogleAuthData } from '../routes/users/users.auth';
 import { User, UserModel } from '../routes/users/users.model';
 
@@ -46,11 +48,13 @@ export enum TestCollateral {
 
 /** Creates a test mesh file */
 export const createTestFile = (file: TestCollateral): Express.Multer.File => {
-    const filename = TestCollateral[file];
+    const filename = file.toString();
+    const path = `${rootPath}/testCollateral/${filename}`;
     return <Express.Multer.File><any>{
+        buffer: fs.readFileSync(path),
         mimetype: 'text',
         originalname: filename,
-        path: `${rootPath}/testCollateral/${filename}`,
+        path,
     };
 };
 
@@ -123,6 +127,42 @@ export const testData: TestData = {
     },
 
     invalidId: '5b52594de29d171ae09642da',
+};
+
+// Create a super test  class override
+// so we can add custom functions
+export interface MedModeSuperTest extends supertest.Test {
+    /** attaches a test mesh to the request */
+    attachTestMesh(testMesh: TestMesh): MedModeSuperTest;
+}
+
+// Get the interface for requests so we can extend it
+const requestClass = (<any>supertest).Test;
+
+/** attaches a test mesh to the request */
+requestClass.prototype.attachTestMesh = function (testMesh: TestMesh): MedModeSuperTest {
+    if (testMesh.name != undefined && testMesh.name != undefined) {
+        this.field('name', testMesh.name);
+    }
+
+    if (testMesh.shortDesc != undefined && testMesh.shortDesc != undefined) {
+        this.field('shortDesc', testMesh.shortDesc);
+    }
+
+    if (testMesh.longDesc != undefined && testMesh.longDesc != undefined) {
+        this.field('longDesc', testMesh.longDesc);
+    }
+
+    if (testMesh.file) {
+        this.attach(FieldName, testMesh.file.path);
+    }
+
+    return this;
+};
+
+/** Tests should import this reqesust to get extensions through intellidense */
+export const request = (app: any): supertest.SuperTest<MedModeSuperTest> => {
+    return <supertest.SuperTest<MedModeSuperTest>><any>supertest(app);
 };
 
 /** Creates a test user based on the specified token values */

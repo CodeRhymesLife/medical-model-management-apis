@@ -1,4 +1,3 @@
-import request from 'supertest';
 import httpStatus from 'http-status';
 import chai from 'chai';
 import { InstanceType } from 'typegoose';
@@ -9,12 +8,12 @@ import {
     createMesh,
     createTestFile,
     createUser,
+    request,
     TestCollateral,
     testData,
     TestMesh
 } from '../../tests/testUtils';
 import { Mesh, MeshModel } from './meshes.model';
-import { FieldName } from './meshes.storage';
 import { User } from '../users/users.model';
 
 const expect = chai.expect;
@@ -50,25 +49,34 @@ describe('## Mesh APIs', () => {
     });
 
     describe('# POST /meshes', () => {
-        it('should fail validation', async () => {
-            // The data used to create the mesh
-            // Name is undefined
-            const createData = {
-                name: undefined,
-                shortDesc: testData.meshes.one.shortDesc,
-                longDesc: testData.meshes.one.longDesc,
-            };
+        it('should fail validation when name is undefined', async () => {
+            const testMeshWithoutName = <TestMesh>Object.create(testData.meshes.one);
+            testMeshWithoutName.name = undefined;
 
             // Attempt to create a mesh without a name
             const res = await request(app)
                 .post('/meshes')
                 .set(settings.headers.idToken, testData.users.one.idToken)
-                .send(createData)
-                .attach(FieldName, testData.meshes.one.file.path)
+                .attachTestMesh(testMeshWithoutName)
                 .expect(httpStatus.BAD_REQUEST);
 
             // Validate the response message is informative
             expect(res.body.message).to.equal('"name" is required');
+        });
+
+        it('should fail validation when name is empty', async () => {
+            const testMeshWithEmptyName = <TestMesh>Object.create(testData.meshes.one);
+            testMeshWithEmptyName.name = '';
+
+            // Attempt to create a mesh without a name
+            const res = await request(app)
+                .post('/meshes')
+                .set(settings.headers.idToken, testData.users.one.idToken)
+                .attachTestMesh(testMeshWithEmptyName)
+                .expect(httpStatus.BAD_REQUEST);
+
+            // Validate the response message is informative
+            expect(res.body.message).to.equal('"name" is not allowed to be empty');
         });
 
         it('should create a new mesh', async () => {
@@ -76,7 +84,7 @@ describe('## Mesh APIs', () => {
             const res = await request(app)
                 .post('/meshes')
                 .set(settings.headers.idToken, testData.users.one.idToken)
-                .send(testData.meshes.one)
+                .attachTestMesh(testData.meshes.one)
                 .expect(httpStatus.CREATED);
 
             // Validate the response
@@ -91,7 +99,7 @@ describe('## Mesh APIs', () => {
             const res = await request(app)
                 .post('/meshes')
                 .set(settings.headers.idToken, testData.users.one.idToken)
-                .send(testData.meshes.one)
+                .attachTestMesh(testData.meshes.one)
                 .expect(httpStatus.CREATED);
 
             // Validate the response

@@ -66,7 +66,7 @@ export default class MeshModelController {
             logger.req().info(`${LOG_TAG} successfully created mesh ${createdMesh._id} for user '${req.authedUser.email}'`);
             return res.status(httpStatus.CREATED).json(createdMesh);
         } catch (err) {
-            logger.req().error(`${LOG_TAG} error while creating mesh '${req.body.name}'`);
+            logger.req().error(`${LOG_TAG} error while creating mesh '${req.body.name}'. Error: ${err}`);
             return next(err);
         }
     }

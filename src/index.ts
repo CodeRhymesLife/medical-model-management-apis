@@ -24,7 +24,10 @@ const connectToDb = async () => {
         const mongoUri = config.mongo.host;
         logger.info(`${LOG_TAG} attempting to connect to mongo host '${mongoUri}'`);
 
-        await mongoose.connect(mongoUri, { server: { socketOptions: { keepAlive: 1 } } });
+        await mongoose.connect(
+            mongoUri,
+            { useNewUrlParser: true }
+        );
         logger.info(`${LOG_TAG} mongo connection successful`);
     } catch (err) {
         logger.error(`${LOG_TAG} Error connecting to mongoose db ${err}`);

@@ -1,10 +1,9 @@
-import request from 'supertest';
 import httpStatus from 'http-status';
 import chai from 'chai';
 
 import app from '../../index';
 import settings from '../../config/settings';
-import { createUser, testData, TestUser } from '../../tests/testUtils';
+import { createUser, request, testData, TestUser } from '../../tests/testUtils';
 import { UserModel } from './users.model';
 
 const expect = chai.expect;
