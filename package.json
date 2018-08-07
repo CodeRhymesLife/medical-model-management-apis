@@ -17,6 +17,7 @@
   "scripts": {
     "start": "yarn deploy:dev",
     "lint": "yarn local:lint",
+    "setup": "yarn && cp -n ./src/config/settings.example.json ./src/config/settings.json && cp -n .env.example .env && echo 'Update src/config/settings.json and .env with your environment specific values!!!!!!'",
     "test": "yarn deploy:build && yarn deploy:test",
     "deploy:prod": "sudo docker-compose up",
     "deploy:build": "sudo docker-compose build --force-rm apis",
