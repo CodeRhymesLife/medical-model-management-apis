@@ -1,7 +1,8 @@
 # Setup
 1. Install [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
-2. Install yarn `npm install yarn -g`
-3. Run setup `yarn setup`
+2. Install [Docker Compose](https://docs.docker.com/compose/install/#install-compose)
+3. Install yarn `npm install yarn -g`
+4. Run setup `yarn setup`
 
 # Start The Server
 `yarn start`
