@@ -4,7 +4,7 @@ import multer from 'multer';
 
 import { logger } from '../../config/winston';
 import APIError from '../helpers/APIError';
-import { Mesh, MeshModel } from './meshes.model';
+import { Mesh, MeshModel, ResourceStates } from './meshes.model';
 import { MeshStorage } from './meshes.storage';
 
 const LOG_TAG = '[MeshModels.Controller]';
@@ -99,6 +99,13 @@ export default class MeshModelController {
         const mesh = req.loadedMesh;
 
         try {
+            // we can't delete a mesh unless it's in the ready state
+            if (mesh.state != ResourceStates.READY) {
+                logger.req().error(`${LOG_TAG} cannot delete mesh. Resource state ${mesh.state} != ${ResourceStates.READY}`);
+                const conflictError = new APIError(`Mesh state must be '${ResourceStates.READY}' to delete`, httpStatus.CONFLICT, true);
+                return next(conflictError);
+            }
+
             const removedMesh = await mesh.remove();
 
             logger.req().info(`${LOG_TAG} successfully removed mesh '${removedMesh._id}' with name '${removedMesh.name}'`);

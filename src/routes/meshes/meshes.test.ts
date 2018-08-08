@@ -13,7 +13,7 @@ import {
     testData,
     TestMesh
 } from '../../tests/testUtils';
-import { Mesh, MeshModel } from './meshes.model';
+import { Mesh, MeshModel, ResourceStates } from './meshes.model';
 import { User } from '../users/users.model';
 
 const expect = chai.expect;
@@ -313,12 +313,26 @@ describe('## Mesh APIs', () => {
             expect(res.body.message).to.equal('Not Found');
         });
 
+        it('should fail to delete mesh that\'s still processing', async () => {
+            // Create a mesh for user one
+            const mesh = await createMesh(userOne, testData.meshes.one, ResourceStates.PROCESSING);
+
+            // Attempt to delete a mesh that doesn't exist
+            const res = await request(app)
+                .delete(`/meshes/${mesh._id}`) // Invalid mesh id
+                .set(settings.headers.idToken, testData.users.one.idToken)
+                .expect(httpStatus.CONFLICT);
+
+            // Validate the response
+            expect(res.body.message).to.equal(`Mesh state must be '${ResourceStates.READY}' to delete`);
+        });
+
         it('should fail to delete mesh when user does not own mesh', async () => {
             // Create a mesh for user one
             await createMesh(userOne, testData.meshes.one);
 
             // Create a mesh for user two
-            const userTwoMesh = await createMesh(userTwo, testData.meshes.two);
+            const userTwoMesh = await createMesh(userTwo, testData.meshes.two, ResourceStates.READY);
 
             // Attempt to delete user two's mesh with user one's credentials
             const res = await request(app)
@@ -332,7 +346,7 @@ describe('## Mesh APIs', () => {
 
         it('should delete mesh owned by user', async () => {
             // Create a mesh for user one
-            const mesh = await createMesh(userOne, testData.meshes.one);
+            const mesh = await createMesh(userOne, testData.meshes.one, ResourceStates.READY);
 
             // Delete the mesh
             const res = await request(app)

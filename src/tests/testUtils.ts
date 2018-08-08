@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import supertest from 'supertest';
 import { InstanceType } from 'typegoose';
 
-import { Mesh, MeshModel } from '../routes/meshes/meshes.model';
+import { Mesh, MeshModel, ResourceStates } from '../routes/meshes/meshes.model';
 import { FieldName, MeshStorage } from '../routes/meshes/meshes.storage';
 import { GoogleAuthData } from '../routes/users/users.auth';
 import { User, UserModel } from '../routes/users/users.model';
@@ -74,7 +74,6 @@ export interface TestData {
 
     /** A collectino of test meshes */
     meshes: TestMeshCollection;
-
 
     /** An invalid database id */
     invalidId: string;
@@ -171,16 +170,24 @@ export const createUser = (testUser: TestUser): Promise<InstanceType<User>> => {
 };
 
 /** Creates a test mesh based on the specified data */
-export const createMesh = async (owner: InstanceType<User>, testMesh: TestMesh): Promise<InstanceType<Mesh>> => {
+export const createMesh = async (owner: InstanceType<User>, testMesh: TestMesh, state?: ResourceStates): Promise<InstanceType<Mesh>> => {
     const files = <Express.Multer.File[]>[];
     files.push(<Express.Multer.File><any>(testMesh.file));
 
-    return MeshModel.createMesh(
+    const mesh = await MeshModel.createMesh(
         owner,
         testMesh.name,
         testMesh.shortDesc,
         testMesh.longDesc,
         files
     );
+
+    // By default the mesh's state is processing
+    // Update its state to the pased in value, if defined
+    if (state != undefined) {
+        await mesh.updateState(state);
+    }
+
+    return mesh;
 };
 
