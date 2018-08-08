@@ -211,6 +211,34 @@ export class Mesh extends Typegoose {
         return this.owner.toString() === user._id.toString();
     }
 
+    /**
+     * Set the mesh's state
+     * @return false if there was an error, true otherwise
+     */
+    @instanceMethod
+    async updateState(this: InstanceType<Mesh>, newState: ResourceStates): Promise<boolean> {
+        try {
+            logger.req().info(`${LOG_TAG} updating state from ${this.state} to ${newState} for mesh '${this.name}' with id '${this._id}'`);
+
+            // If the states are the same do not update
+            if (this.state == newState) {
+                logger.req().info(`${LOG_TAG} mesh '${this.name}' with id '${this._id}' already has state ${newState}. Not updating`);
+                return true;
+            }
+
+            // Update the state
+            this.state = newState;
+            const updatedMesh = await this.save();
+
+            logger.req().info(`${LOG_TAG} successfully updated state to ${newState} for mesh '${this.name}' with id '${this._id}'`);
+
+            return true;
+        } catch (err) {
+            logger.req().info(`${LOG_TAG} unable to update state from ${this.state} to ${newState}. Error: ${err}`);
+            return false;
+        }
+    }
+
     /** Gets a model by its id */
     @staticMethod
     static async get(

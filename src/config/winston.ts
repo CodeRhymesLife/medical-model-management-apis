@@ -54,7 +54,7 @@ winston.req = () => {
     return winston;
 };
 
-const createReqLogger = (reqId: string, sessionId: string) => {
+export const createReqLogger = (reqId: string, sessionId: string) => {
     const l = new WinstonContext(winston,
         '',
         {
