@@ -47,7 +47,8 @@ export class GridFSFile extends Typegoose {
 
     /** Reads the file from gridfs */
     @instanceMethod
-    saveToFile(this: InstanceType<GridFSFile>): Promise<string> {
+    saveToTemp(this: InstanceType<GridFSFile>): Promise<string> {
+        const self = this;
         return new Promise(async (fulfill, reject) => {
 
             // The mongodb instance created when the mongoose.connection is opened
@@ -62,17 +63,23 @@ export class GridFSFile extends Typegoose {
             try {
                 // Retrieve the file from gridfs
                 const readStream = gfs.createReadStream({
-                    _id: this._id,
+                    _id: self._id,
+                });
+
+                // Handle read errors
+                readStream.on('error', (err) => {
+                    logger.req().error(`${LOG_TAG} unable to read file '${self.filename}' from gridfs. Error: ${err}`);
+                    reject(err);
                 });
 
                 // Create a temporary file to save this to
                 const filePath = await tempWrite(readStream);
 
-                logger.req().info(`${LOG_TAG} successfully read file '${this.filename}' to '${filePath}'`);
+                logger.req().info(`${LOG_TAG} successfully read file '${self.filename}' to '${filePath}'`);
                 fulfill(filePath);
            } catch (err) {
-                logger.req().error(`${LOG_TAG} unable to read file '${this.filename}' from gridfs. Error: ${err}`);
-               const readError = new APIError(`Unable to read file ${this.filename}`, httpStatus.INTERNAL_SERVER_ERROR);
+                logger.req().error(`${LOG_TAG} unable to read file '${self.filename}' from gridfs. Error: ${err}`);
+               const readError = new APIError(`Unable to read file ${self.filename}`, httpStatus.INTERNAL_SERVER_ERROR);
                reject(readError);
             }
         });

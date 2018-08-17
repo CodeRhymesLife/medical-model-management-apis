@@ -277,6 +277,10 @@
   dependencies:
     "@types/node" "*"
 
+"@types/tempy@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@types/tempy/-/tempy-0.1.0.tgz#8ba0339dcd5abb554f301683dc3396d153ec5bfd"
+
 "@types/tough-cookie@*":
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-2.3.3.tgz#7f226d67d654ec9070e755f46daebf014628e9d9"
@@ -867,6 +871,10 @@ charm@~0.1.1:
 check-error@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/check-error/-/check-error-1.0.2.tgz#574d312edd88bb5dd8912e9286dd6c0aed4aac82"
+
+child_process@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/child_process/-/child_process-1.0.2.tgz#b1f7e7fc73d25e7fd1d455adc94e143830182b5a"
 
 chokidar@^2, chokidar@^2.0.2:
   version "2.0.4"
@@ -4702,6 +4710,13 @@ temp-write@^3.4.0:
     pify "^3.0.0"
     temp-dir "^1.0.0"
     uuid "^3.0.1"
+
+tempy@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/tempy/-/tempy-0.2.1.tgz#9038e4dbd1c201b74472214179bc2c6f7776e54c"
+  dependencies:
+    temp-dir "^1.0.0"
+    unique-string "^1.0.0"
 
 term-size@^1.2.0:
   version "1.2.0"
