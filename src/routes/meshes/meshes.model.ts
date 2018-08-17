@@ -15,6 +15,7 @@ import {
     Typegoose,
 } from "typegoose";
 import httpStatus from "http-status";
+import tempWrite from 'temp-write';
 
 import APIError from '../helpers/APIError';
 import { logger } from '../../config/winston';
@@ -44,6 +45,39 @@ export class GridFSFile extends Typegoose {
     @prop({ required: true })
     content_type: string;
 
+    /** Reads the file from gridfs */
+    @instanceMethod
+    saveToFile(this: InstanceType<GridFSFile>): Promise<string> {
+        return new Promise(async (fulfill, reject) => {
+
+            // The mongodb instance created when the mongoose.connection is opened
+            const db = mongoose.connection.db;
+
+            // The native mongo driver used by mongoose
+            const mongoDriver = mongoose.mongo;
+
+            // Create a gridfs-stream
+            const gfs = Grid(db, mongoDriver);
+
+            try {
+                // Retrieve the file from gridfs
+                const readStream = gfs.createReadStream({
+                    _id: this._id,
+                });
+
+                // Create a temporary file to save this to
+                const filePath = await tempWrite(readStream);
+
+                logger.req().info(`${LOG_TAG} successfully read file '${this.filename}' to '${filePath}'`);
+                fulfill(filePath);
+           } catch (err) {
+                logger.req().error(`${LOG_TAG} unable to read file '${this.filename}' from gridfs. Error: ${err}`);
+               const readError = new APIError(`Unable to read file ${this.filename}`, httpStatus.INTERNAL_SERVER_ERROR);
+               reject(readError);
+            }
+        });
+    }
+
     /** Saves original file to gridfs */
     @staticMethod
     static saveFileToGridFS(
@@ -64,27 +98,28 @@ export class GridFSFile extends Typegoose {
 
             try {
                 // Store the file in gridfs
-                const writestream = gfs.createWriteStream({
+                const writeStream = gfs.createWriteStream({
                     filename: file.originalname,
                     mode: 'w',
                     content_type: file.mimetype,
                 });
-                streamifier.createReadStream(file.buffer).pipe(writestream);
+                streamifier.createReadStream(file.buffer).pipe(writeStream);
 
                 // Once we're written to gridfs delete the file from the file system and fulfill the response
-                writestream.on('close', async (savedFile) => {
-                    logger.info(`${LOG_TAG} successfully wrote file '${file.originalname}' to gridfs`);
+                writeStream.on('close', async (savedFile) => {
+                    logger.req().info(`${LOG_TAG} successfully wrote file '${file.originalname}' to gridfs`);
                     fulfill(savedFile);
                 });
 
                 // If there's an error, reject
-                writestream.on('error', (err) => {
-                    logger.error(`${LOG_TAG} unable to save file '${file.originalname}' to gridfs. Error: ${err}`);
+                writeStream.on('error', (err) => {
+                    logger.req().error(`${LOG_TAG} unable to save file '${file.originalname}' to gridfs. Error: ${err}`);
                     reject(err);
                 });
             } catch (err) {
-                logger.error(`${LOG_TAG} unable to save file '${file.originalname}' to gridfs. Error: ${err}`);
-                throw new APIError(`Unable to save file ${file.originalname}`, httpStatus.INTERNAL_SERVER_ERROR);
+                logger.req().error(`${LOG_TAG} unable to save file '${file.originalname}' to gridfs. Error: ${err}`);
+                const saveFileError = new APIError(`Unable to save file ${file.originalname}`, httpStatus.INTERNAL_SERVER_ERROR);
+                reject(saveFileError);
             }
         });
     }
