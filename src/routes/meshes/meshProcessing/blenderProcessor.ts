@@ -1,4 +1,5 @@
 import child_process from 'child_process';
+import loadJsonFile from 'load-json-file';
 import tempy from 'tempy';
 import { InstanceType } from 'typegoose';
 
@@ -9,7 +10,7 @@ const LOG_TAG = '[BlenderProcessor]';
 const PYTHON_SCRIPT_PATH = `${__dirname}/processMeshInBlender.py`;
 
 class BlenderProcessor {
-    async process(mesh: InstanceType<Mesh>) {
+    async process(mesh: InstanceType<Mesh>): Promise<BlenderResponse> {
         logger.req().info(`${LOG_TAG} preparing to process mesh in blender`);
 
         // Save original files to disk
@@ -19,6 +20,9 @@ class BlenderProcessor {
         const response = await this.processInBlender(mesh, filePaths);
 
         // Save files (blend, objs, mtls, images, fbx)
+        //
+
+        return response;
     }
 
     private async saveFilesToDisk(mesh: InstanceType<Mesh>): Promise<string[]> {
@@ -45,60 +49,58 @@ class BlenderProcessor {
         logger.req().info(`${LOG_TAG} processing files in blender`);
 
         // Create arguments to pass to our blender python script
-        const blendAndFbxDir = tempy.directory();
-        const objsDir = tempy.directory();
-        const texturesDir = tempy.directory();
+        const outputDir = tempy.directory();
         const scriptArgs = [
-            "--outputDir", blendAndFbxDir,
-            "--modelId", mesh._id,
-            "--objsDir", objsDir,
-            "--texturesDir", texturesDir,
-            "--models"
+            "--outputDir", outputDir,
+            "--meshId", mesh._id,
+            "--meshFilePaths"
         ].concat(filePaths);
 
         // Process the mesh in Blender
-        let parsedResponse: BlenderResponse = undefined;
+        const profileId = `blender ${mesh._id}`;
+        logger.req().profile(profileId);
+        let response: BlenderResponse = undefined;
         try {
-            logger.req().profile(`blender ${mesh._id}`);
-            const response = await Blender.python(PYTHON_SCRIPT_PATH, scriptArgs);
-            parsedResponse = this.parseBlenderResponse(response);
+            await Blender.python(PYTHON_SCRIPT_PATH, scriptArgs);
+
+            const responseFilePath = `${outputDir}/response.json`;
+            logger.req().info(`${LOG_TAG} parsing response file '${responseFilePath}'`);
+            response = <BlenderResponse>(await loadJsonFile(responseFilePath));
         } catch (err) {
             logger.req().error(`${LOG_TAG} processing model in blender failed. Error: ${err}`);
             throw err;
         }
         finally {
-            logger.req().profile(`blender ${mesh._id}`);
+            logger.req().profile(profileId);
         }
 
         logger.req().info(`${LOG_TAG} finished processing files in blender`);
-        return parsedResponse;
-    }
-
-    private parseBlenderResponse(response: string): BlenderResponse {
-        // Get the data about each part from the blender script
-        const regularExpression = /DATA_START .* DATA_END/g;
-        const match = regularExpression.exec(response);
-        const dataJson = match[0].substring(11, match[0].length - 9);
-        const blenderResponse = <BlenderResponse>JSON.parse(dataJson);
-        return blenderResponse;
+        return response;
     }
 }
 
 interface BlenderResponse {
-    objPaths: string[];
-    texturePaths: string[];
+    blendFilePath: string;
+    pictureFilePath: string;
+    fbxFilePath: string;
+    objMtlFilePaths: ObjMtlFilePaths[];
+    texturePaths?: string[];
     partInfo: MeshPartInfo[];
+}
+
+interface ObjMtlFilePaths {
+    objFilePath: string;
+    mtlFilePath: string;
 }
 
 interface MeshPartInfo {
     originalName: string;
     internalName: string;
     name: string;
-
 }
 
 class Blender {
-    static python(pythonFilePath: string, scriptArgs?: string[]): Promise<string> {
+    static python(pythonFilePath: string, scriptArgs?: string[]): Promise<void> {
         const blenderArgs = [
             "--background",
             "-noaudio",
@@ -116,7 +118,7 @@ class Blender {
                     if (error || stderr) {
                         reject(error || stderr);
                     } else {
-                        fulfill(stdout.toString());
+                        fulfill();
                     }
                 }
             );
