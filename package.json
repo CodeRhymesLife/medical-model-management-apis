@@ -17,7 +17,7 @@
   "scripts": {
     "start": "yarn deploy:dev",
     "lint": "yarn local:lint",
-    "setup": "yarn && cp -n ./src/config/settings.example.json ./src/config/settings.json && cp -n .env.example .env && echo 'Update src/config/settings.json and .env with your environment specific values!!!!!!'",
+    "setup": "yarn && yarn setup:settings",
     "test": "yarn deploy:test",
     "deploy:clean": "sudo docker-compose build --force-rm apis",
     "deploy:dev": "yarn deploy:clean && sudo docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
@@ -25,7 +25,7 @@
     "deploy:test": "yarn deploy:clean && sudo docker-compose -f docker-compose.yml -f docker-compose.test.yml run apis",
     "local:dev:start": "yarn local:build && cross-env NODE_ENV=development nodemon build/index.js",
     "local:build": "yarn local:lint && yarn local:build-ts",
-    "local:build-ts": "rimraf build && tsc && ./node_modules/.bin/copyfiles -u 1 src/config/settings.json build",
+    "local:build-ts": "rimraf build && tsc && ./node_modules/.bin/copyfiles -u 1 src/config/settings.json src/**/*.py build",
     "local:lint": "tslint -c tslint.json -p tsconfig.json",
     "local:prod:start": "yarn local:build && cross-env NODE_ENV=production pm2 start build --name medical-model-manager-apis && pm2 logs medical-model-manager-apis",
     "local:prod:stop": "pm2 delete medical-model-manager-apis",
@@ -33,7 +33,8 @@
     "local:test": "yarn local:build && cross-env NODE_ENV=test MONGO_HOST=mongodb://mongo:27017/medmod-test ./node_modules/.bin/mocha \"build/**/*.test.js\" --ui bdd --reporter spec --colors src --recursive --exit",
     "local:test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors server --recursive",
     "local:test:check-coverage": "yarn local:test:coverage && istanbul check-coverage",
-    "precommit": "yarn lint && yarn test"
+    "precommit": "yarn lint && yarn test",
+    "setup:settings": "cp -n ./src/config/settings.example.json ./src/config/settings.json && cp -n .env.example .env && echo 'Update src/config/settings.json and .env with your environment specific values!!!!!!'"
   },
   "keywords": [
     "express",

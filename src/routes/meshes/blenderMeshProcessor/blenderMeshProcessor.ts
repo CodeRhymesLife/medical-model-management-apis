@@ -100,7 +100,7 @@ interface MeshPartInfo {
 }
 
 class Blender {
-    static python(pythonFilePath: string, scriptArgs?: string[]): Promise<void> {
+    static python(pythonFilePath: string, scriptArgs?: string[]): Promise<string> {
         const blenderArgs = [
             "--background",
             "-noaudio",
@@ -118,7 +118,7 @@ class Blender {
                     if (error || stderr) {
                         reject(error || stderr);
                     } else {
-                        fulfill();
+                        fulfill(stdout.toString());
                     }
                 }
             );
