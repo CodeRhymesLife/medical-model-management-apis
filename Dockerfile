@@ -1,9 +1,4 @@
 FROM node:10.9.0-stretch
-RUN mkdir -p /usr/src/medmod/apis
-WORKDIR /usr/src/medmod/apis
-COPY package.json /usr/src/medmod/apis
-RUN npm install yarn@1.9.4 -g
-RUN yarn --pure-lockfile
 
 # Download blender
 RUN wget -P /opt/blender/ https://builder.blender.org/download//blender-2.79-4b0b91aee07-linux-glibc219-x86_64.tar.bz2
@@ -20,5 +15,13 @@ RUN apt-get -y update && \
 RUN apt-get -y update && \
         apt-get -y install libxext6
 
+# Setup our source code
+RUN mkdir -p /usr/src/medmod/apis
+WORKDIR /usr/src/medmod/apis
+COPY package.json /usr/src/medmod/apis
+RUN npm install yarn@1.9.4 -g
+RUN yarn --pure-lockfile
 COPY . /usr/src/medmod/apis
+
+# Expose the API port
 EXPOSE 3000
