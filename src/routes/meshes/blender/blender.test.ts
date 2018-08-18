@@ -7,7 +7,7 @@ const expect = chai.expect;
 const TEST_SCRIPT = `${__dirname}/blender.test.py`;
 
 describe('## Blender Tests', () => {
-    it.only('Verifies blender is properly called with arguments', async () => {
+    it('Verifies blender is properly called with arguments', async () => {
         const testString = 'some test string';
         const testArray = ['first', 'second'];
 
