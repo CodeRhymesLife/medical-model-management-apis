@@ -74,7 +74,7 @@ export class GridFSFile extends Typegoose {
                 });
 
                 // Create a temporary file to save this to
-                const filePath = await tempWrite(readStream);
+                const filePath = await tempWrite(readStream, this.filename);
 
                 logger.req().info(`${LOG_TAG} successfully read file '${self.filename}' to '${filePath}'`);
                 fulfill(filePath);
@@ -184,7 +184,7 @@ export class MeshFileCollection extends Typegoose {
 
     /** Saves the given files in the DB and returns a mesh file collection */
     @staticMethod
-    static async saveFiles(
+    static async createWithOriginalFiles(
         this: ModelType<MeshFileCollection> & typeof MeshFileCollection,
         files: Express.Multer.File[],
     ): Promise<InstanceType<MeshFileCollection>> {
@@ -209,11 +209,12 @@ export class MeshFileCollection extends Typegoose {
 
         try {
             // Return a mesh file collection
+            logger.req().info(`${LOG_TAG} creating mesh file collection with '${originalFiles.length}' original files`);
             const meshFileCollection = await MeshFileCollectionModel.create({
                 originalFiles,
             });
 
-            logger.info(`${LOG_TAG} successfully saved mesh file collection ${meshFileCollection._id}`);
+            logger.info(`${LOG_TAG} successfully saved mesh file collection '${meshFileCollection._id}' with '${meshFileCollection.originalFiles.length}' original files`);
 
             return meshFileCollection;
         } catch (err) {
@@ -357,7 +358,8 @@ export class Mesh extends Typegoose {
     ): Promise<InstanceType<Mesh>> {
         logger.info(`${LOG_TAG} creating new mesh with name '${name}'`);
 
-        const meshFileCollection = await MeshFileCollectionModel.saveFiles(files);
+        // Create a document that stores references to all of our files
+        const meshFileCollection = await MeshFileCollectionModel.createWithOriginalFiles(files);
 
         try {
             const savedMesh = await MeshModel.create({

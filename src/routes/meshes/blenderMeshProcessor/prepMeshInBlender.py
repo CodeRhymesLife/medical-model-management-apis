@@ -163,7 +163,7 @@ def add_unity_collider():
         # Name each part uniquely
         partNum += 1
         originalName = mesh.name
-        mesh.name = "{}_{}".format( args.modelId, partNum )
+        mesh.name = "{}_{}".format( args.meshId, partNum )
 
         # Duplicate this mesh
         collider = mesh.copy()
@@ -256,8 +256,8 @@ def create_obj_for_each_part ():
     objMtlFilePaths = []
     for mesh in meshes:
         if "_collider" not in mesh.name:
-            objPath = os.path.join( args.objsDir, mesh.name + ".obj" )
-            mtlPath = os.path.join( args.objsDir, mesh.name + ".mtl" )
+            objPath = os.path.join( args.outputDir, mesh.name + ".obj" )
+            mtlPath = os.path.join( args.outputDir, mesh.name + ".mtl" )
             mesh.select = True
             bpy.ops.export_scene.obj( filepath=objPath, use_selection=True )
             objMtlFilePaths.append({
@@ -313,14 +313,14 @@ def take_picture():
 
     return scene.render.filepath
 
-ensure_files_exist(args.modelFilePaths)
+ensure_files_exist(args.meshFilePaths)
 
 remove_default_objects()
 
 # Save a reference to our scene so we can update it later
 scene = bpy.context.scene
 
-load_model_files(args.modelFilePaths)
+load_model_files(args.meshFilePaths)
 
 add_colors()
 
@@ -353,12 +353,13 @@ picturePath = take_picture()
 response = {
     'blendFilePath': blendPath,
     'fbxFilePath': fbxPath,
+    'pictureFilePath': picturePath,
     'objMtlFilePaths': objMtlFilePaths,
     'textureFilePaths': textureFilePaths,
     'partInfo': modelPartData,
 }
 
 # Save the response to a json file
-responseFile = os.path.join(args.outputDir, "response.json")
-with open(responseFile, 'w') as outFile:
-    json.dump(response, responseFile)
+responseFilePath = os.path.join(args.outputDir, "response.json")
+with open(responseFilePath, 'w') as outFile:
+    json.dump(response, outFile)

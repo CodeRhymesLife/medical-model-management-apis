@@ -2,7 +2,7 @@ import loadJsonFile from 'load-json-file';
 import mime from 'mime-types';
 import path from 'path';
 import tempy from 'tempy';
-import { InstanceType } from 'typegoose';
+import { InstanceType, Ref } from 'typegoose';
 
 import Blender from '../blender/blender';
 import { logger } from '../../../config/winston';
@@ -16,7 +16,7 @@ import {
 } from '../meshes.model';
 
 const LOG_TAG = '[BlenderProcessor]';
-const PYTHON_SCRIPT_PATH = `${__dirname}/processMeshInBlender.py`;
+const PYTHON_SCRIPT_PATH = `${__dirname}/prepMeshInBlender.py`;
 
 /**
  * Processes meshes in Blender
@@ -48,6 +48,7 @@ export default class BlenderMeshProcessor {
         // Save files (blend, objs, mtls, images, fbx)
         const updatedMesh = await BlenderMeshProcessor.saveBlenderResponseFiles(mesh, blenderResponse);
 
+        logger.req().info(`${LOG_TAG} successfully processed mesh '${mesh.name}' '${mesh._id}'`);
         return updatedMesh;
     }
 
@@ -58,16 +59,24 @@ export default class BlenderMeshProcessor {
     private static async saveFilesToDisk(mesh: InstanceType<Mesh>): Promise<string[]> {
         logger.req().info(`${LOG_TAG} saving mesh files to temp dir`);
 
-        // Make sure the original files collection is populated
+        // Populate the mesh file collection so we have access to each file
         const populatedMesh = await mesh.populate({
-            path: 'files.originalFiles',
+            path: 'files',
+            model: 'MeshFileCollection',
         }).execPopulate();
+
+        const files = <InstanceType<MeshFileCollection>>populatedMesh.files;
+        logger.req().info(`${LOG_TAG} saving '${files.originalFiles.length}' original files from mesh file collection '${files._id}'`);
 
         // Loop over the GridFS files and save them to a temp directory
         const filePaths = [];
-        const files = <InstanceType<MeshFileCollection>>populatedMesh.files;
-        for (const fileIndex in files.originalFiles) {
-            const file = <InstanceType<GridFSFile>>files.originalFiles[fileIndex];
+        for (let fileIndex = 0; fileIndex < files.originalFiles.length; fileIndex++) {
+            const fileRef = <Ref<GridFSFile>>files.originalFiles[fileIndex];
+
+            logger.req().info(`${LOG_TAG} getting file '${fileRef}' from DB`);
+            const file = await GridFSFileModel.findById(fileRef);
+
+            logger.req().info(`${LOG_TAG} saving file '${file._id}' with name '${file.filename}' to temp`);
             const filePath = await file.saveToTemp();
             filePaths.push(filePath);
         }
@@ -127,6 +136,7 @@ export default class BlenderMeshProcessor {
         // Make sure the files collection is populated
         const populatedMesh = await mesh.populate({
             path: 'files',
+            model: 'MeshFileCollection',
         }).execPopulate();
 
         // Get the files object so we can update it
@@ -140,8 +150,8 @@ export default class BlenderMeshProcessor {
             const fileName = path.basename(filePath);
             const mimeType = mime.lookup(filePath) || 'application/octet-stream';
 
-            logger.req().info(`${LOG_TAG} saving '${fileName}' to db'`);
-            const gridFSFile = GridFSFileModel.save(fileName, filePath, mimeType);
+            logger.req().info(`${LOG_TAG} saving '${fileName}' at path '${filePath}' to db'`);
+            const gridFSFile = await GridFSFileModel.save(fileName, filePath, mimeType);
             logger.req().info(`${LOG_TAG} successfully saved '${fileName}' to db`);
 
             return gridFSFile;

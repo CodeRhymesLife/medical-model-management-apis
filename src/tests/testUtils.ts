@@ -52,7 +52,7 @@ export const createTestFile = (file: TestCollateral): Express.Multer.File => {
     const path = `${rootPath}/testCollateral/${filename}`;
     return <Express.Multer.File><any>{
         buffer: fs.readFileSync(path),
-        mimetype: 'text',
+        mimetype: 'octet-stream',
         originalname: filename,
         path,
     };
