@@ -1,28 +1,37 @@
-import child_process from 'child_process';
 import loadJsonFile from 'load-json-file';
+import mime from 'mime-types';
+import path from 'path';
 import tempy from 'tempy';
 import { InstanceType } from 'typegoose';
 
+import Blender from '../blender/blender';
 import { logger } from '../../../config/winston';
-import { GridFSFile, Mesh, MeshFileCollection } from '../meshes.model';
+import {
+    GridFSFile,
+    GridFSFileModel,
+    Mesh,
+    MeshFileCollection,
+    OBJMTLPair,
+    OBJMTLPairModel
+} from '../meshes.model';
 
 const LOG_TAG = '[BlenderProcessor]';
 const PYTHON_SCRIPT_PATH = `${__dirname}/processMeshInBlender.py`;
 
-class BlenderProcessor {
-    async process(mesh: InstanceType<Mesh>): Promise<BlenderResponse> {
+class BlenderMeshProcessor {
+    async process(mesh: InstanceType<Mesh>): Promise<InstanceType<Mesh>> {
         logger.req().info(`${LOG_TAG} preparing to process mesh in blender`);
 
         // Save original files to disk
         const filePaths = await this.saveFilesToDisk(mesh);
 
         // Process files in Blender
-        const response = await this.processInBlender(mesh, filePaths);
+        const blenderResponse = await this.processInBlender(mesh, filePaths);
 
         // Save files (blend, objs, mtls, images, fbx)
-        //
+        const updatedMesh = await this.saveBlenderResponseFiles(mesh, blenderResponse);
 
-        return response;
+        return updatedMesh;
     }
 
     private async saveFilesToDisk(mesh: InstanceType<Mesh>): Promise<string[]> {
@@ -77,6 +86,59 @@ class BlenderProcessor {
         logger.req().info(`${LOG_TAG} finished processing files in blender`);
         return response;
     }
+
+    private async saveBlenderResponseFiles(mesh: InstanceType<Mesh>, blenderResponse: BlenderResponse): Promise<InstanceType<Mesh>> {
+        logger.req().info(`${LOG_TAG} saving files created in blender to DB`);
+
+        // Make sure the files collection is populated
+        const populatedMesh = await mesh.populate({
+            path: 'files',
+        }).execPopulate();
+
+        // Get the files object so we can populate it
+        const files = <InstanceType<MeshFileCollection>>populatedMesh.files;
+
+        // Read file from buffer and save to gridFS
+        const save = async (filePath: string): Promise<GridFSFile> => {
+            const fileName = path.basename(filePath);
+            const mimeType = mime.lookup(filePath) || 'application/octet-stream';
+
+            logger.req().info(`${LOG_TAG} saving '${fileName}' to db'`);
+            const gridFSFile = GridFSFileModel.save(fileName, filePath, mimeType);
+            logger.req().info(`${LOG_TAG} successfully saved '${fileName}' to db`);
+
+            return gridFSFile;
+        };
+
+        files.blendFile = await save(blenderResponse.blendFilePath);
+        files.fbx = await save(blenderResponse.fbxFilePath);
+        files.picture = await save(blenderResponse.pictureFilePath);
+
+        // Save obj and mtl files
+        for (let objMtlIndex = 0; objMtlIndex < blenderResponse.objMtlFilePaths.length; objMtlIndex++) {
+            const objMtlFilePaths = blenderResponse.objMtlFilePaths[objMtlIndex];
+            const objMtlPair = await OBJMTLPairModel.create({
+                obj: await save(objMtlFilePaths.objFilePath),
+                mtl: await save(objMtlFilePaths.mtlFilePath),
+            });
+            files.objMtlFiles.push(objMtlPair);
+        }
+
+        // Save textures
+        if (blenderResponse.texturePaths) {
+            const texturePaths = blenderResponse.texturePaths;
+            for (let textureIndex = 0; textureIndex < texturePaths.length; textureIndex++) {
+                const texturePath = texturePaths[textureIndex];
+                const texture = await save(texturePath);
+                files.textures.push(texture);
+            }
+        }
+
+        // Save references to the files
+        await files.save();
+
+        return populatedMesh;
+    }
 }
 
 interface BlenderResponse {
@@ -99,29 +161,3 @@ interface MeshPartInfo {
     name: string;
 }
 
-class Blender {
-    static python(pythonFilePath: string, scriptArgs?: string[]): Promise<string> {
-        const blenderArgs = [
-            "--background",
-            "-noaudio",
-            "--python", pythonFilePath,
-            "--"
-        ];
-        blenderArgs.concat(scriptArgs);
-
-        return new Promise((fulfill, reject) => {
-            // Run the Blender script in a child process
-            child_process.execFile(
-                "blender",
-                blenderArgs,
-                (error: Error, stdout: Buffer, stderr: Buffer) => {
-                    if (error || stderr) {
-                        reject(error || stderr);
-                    } else {
-                        fulfill(stdout.toString());
-                    }
-                }
-            );
-        });
-    }
-}

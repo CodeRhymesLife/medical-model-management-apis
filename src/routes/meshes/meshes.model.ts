@@ -1,4 +1,5 @@
 /** @namespace medmod.apis */
+import fs from 'fs-extra';
 import Grid from 'gridfs-stream';
 import { MongoError } from 'mongodb';
 import mongoose from "mongoose";
@@ -85,11 +86,13 @@ export class GridFSFile extends Typegoose {
         });
     }
 
-    /** Saves original file to gridfs */
+    /** Save file buffer to gridfs */
     @staticMethod
-    static saveFileToGridFS(
+    static save(
         this: ModelType<GridFSFile> & typeof GridFSFile,
-        file: Express.Multer.File
+        name: string,
+        bufferOrPath: Buffer | string,
+        mimeType: string,
     ): Promise<InstanceType<GridFSFile>> {
         logger.info(`${LOG_TAG} saving file to gridfs`);
 
@@ -106,26 +109,36 @@ export class GridFSFile extends Typegoose {
             try {
                 // Store the file in gridfs
                 const writeStream = gfs.createWriteStream({
-                    filename: file.originalname,
+                    filename: name,
                     mode: 'w',
-                    content_type: file.mimetype,
+                    content_type: mimeType,
                 });
-                streamifier.createReadStream(file.buffer).pipe(writeStream);
+
+                // Create a read stream from the data
+                let readStream = undefined;
+                if (typeof bufferOrPath === 'string') {
+                    readStream = fs.createReadStream(bufferOrPath);
+                } else {
+                    readStream = streamifier.createReadStream(bufferOrPath);
+                }
+
+                // Save to gridfs
+                readStream.pipe(writeStream);
 
                 // Once we're written to gridfs delete the file from the file system and fulfill the response
                 writeStream.on('close', async (savedFile) => {
-                    logger.req().info(`${LOG_TAG} successfully wrote file '${file.originalname}' to gridfs`);
+                    logger.req().info(`${LOG_TAG} successfully wrote file '${name}' to gridfs`);
                     fulfill(savedFile);
                 });
 
                 // If there's an error, reject
                 writeStream.on('error', (err) => {
-                    logger.req().error(`${LOG_TAG} unable to save file '${file.originalname}' to gridfs. Error: ${err}`);
+                    logger.req().error(`${LOG_TAG} unable to save file '${name}' to gridfs. Error: ${err}`);
                     reject(err);
                 });
             } catch (err) {
-                logger.req().error(`${LOG_TAG} unable to save file '${file.originalname}' to gridfs. Error: ${err}`);
-                const saveFileError = new APIError(`Unable to save file ${file.originalname}`, httpStatus.INTERNAL_SERVER_ERROR);
+                logger.req().error(`${LOG_TAG} unable to save file '${name}' to gridfs. Error: ${err}`);
+                const saveFileError = new APIError(`Unable to save file ${name}`, httpStatus.INTERNAL_SERVER_ERROR);
                 reject(saveFileError);
             }
         });
@@ -146,17 +159,28 @@ export class OBJMTLPair extends Typegoose {
 
 /** File associated with the mesh */
 export class MeshFileCollection extends Typegoose {
-    /** Array of associated files */
-    @arrayProp({ itemsRef: GridFSFile })
-    originalFiles: Ref<GridFSFile>[];
-
     /** Blend file */
     @prop()
     blendFile: Ref<GridFSFile>;
 
+    /** FBX file of the model */
+    fbx: Ref<GridFSFile>;
+
     /** List of obj and mtl files */
     @arrayProp({ itemsRef: OBJMTLPair })
     objMtlFiles: Ref<OBJMTLPair>[];
+
+    /** Array of associated files */
+    @arrayProp({ itemsRef: GridFSFile })
+    originalFiles: Ref<GridFSFile>[];
+
+    /** Picture of the mesh */
+    @prop()
+    picture: Ref<GridFSFile>;
+
+    /** Textures */
+    @arrayProp({ itemsRef: GridFSFile })
+    textures: Ref<GridFSFile>[];
 
     /** Saves the given files in the DB and returns a mesh file collection */
     @staticMethod
@@ -177,7 +201,7 @@ export class MeshFileCollection extends Typegoose {
         const originalFiles: InstanceType<GridFSFile>[] = [];
         for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
             const file = files[fileIndex];
-            const meshFile = await GridFSFileModel.saveFileToGridFS(file);
+            const meshFile = await GridFSFileModel.save(file.originalname, file.buffer, file.mimetype);
 
             // Save a reference to the file so we can create a collection
             originalFiles.push(meshFile);
@@ -377,3 +401,4 @@ export const GridFSFileModel = new GridFSFile().getModelForClass(GridFSFile, {
     },
 });
 
+export const OBJMTLPairModel = new OBJMTLPair().getModelForClass(OBJMTLPair);
