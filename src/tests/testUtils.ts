@@ -75,7 +75,7 @@ export interface TestMeshCollection {
     withTexture: TestMesh;
 
     /** An obj mesh */
-    obj: TestMesh;
+    objMtl: TestMesh;
 }
 
 /** A collection of test data used during tests */
@@ -145,7 +145,7 @@ export const testData: TestData = {
             ],
         },
 
-        obj: {
+        objMtl: {
             name: 'Test Mesh - obj file',
             shortDesc: undefined,
             longDesc: undefined,

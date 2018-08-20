@@ -44,6 +44,29 @@ describe('## BlenderMeshProcessor tests', () => {
             return Promise.resolve();
         });
 
+        it('process obj and mtl without textures', async () => {
+            // Create the mesh
+            const objWithoutTextures = await createMesh(user, testData.meshes.objMtl);
+
+            // Process the mesh
+            const updatedMesh = await BlenderMeshProcessor.process(objWithoutTextures);
+
+            // Ensure that references were updated properly
+            const files = <InstanceType<MeshFileCollection>>updatedMesh.files;
+            expect(files.blendFile).to.not.be.null;
+            expect(files.fbx).to.not.be.null;
+            expect(files.picture).to.not.be.null;
+            expect(files.objMtlFiles.length).to.equal(1);
+
+            const objMtlPair = <InstanceType<OBJMTLPair>>files.objMtlFiles[0];
+            expect(objMtlPair.obj).to.be.not.null;
+            expect(objMtlPair.mtl).to.be.not.null;
+
+            expect(files.textures.length).to.equal(0);
+
+            return Promise.resolve();
+        });
+ 
         it('process fbx mesh with texture', async () => {
             // Create the mesh
             const meshWithTextures = await createMesh(user, testData.meshes.withTexture);
@@ -67,5 +90,5 @@ describe('## BlenderMeshProcessor tests', () => {
 
             return Promise.resolve();
         }).timeout(5000);
-    });
+   });
 });
