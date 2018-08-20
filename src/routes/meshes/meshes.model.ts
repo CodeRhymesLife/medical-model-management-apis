@@ -16,7 +16,7 @@ import {
     Typegoose,
 } from "typegoose";
 import httpStatus from "http-status";
-import tempWrite from 'temp-write';
+import tempy from 'tempy';
 
 import APIError from '../helpers/APIError';
 import { logger } from '../../config/winston';
@@ -24,17 +24,6 @@ import { MeshStorage } from './meshes.storage';
 import { User } from '../users/users.model';
 
 const LOG_TAG = "[MeshModels.Model]";
-
-
-/** Mesh states */
-export enum MeshFileExtensions {
-    BLEND = 'blend',
-    FBX = 'fbx',
-    OBJ = 'obj',
-    MTL = 'mtl',
-    PNG = 'png',
-    JPG = 'jpg',
-}
 
 /** Represents a gridfs file */
 export class GridFSFile extends Typegoose {
@@ -44,11 +33,14 @@ export class GridFSFile extends Typegoose {
 
     /** The type of the file's content. Used like mimetype */
     @prop({ required: true })
-    content_type: string;
+    contentType: string;
 
     /** Reads the file from gridfs */
     @instanceMethod
-    saveToTemp(this: InstanceType<GridFSFile>): Promise<string> {
+    saveToFolder(
+        this: InstanceType<GridFSFile>,
+        dirPath: string
+    ): Promise<string> {
         const self = this;
         return new Promise(async (fulfill, reject) => {
 
@@ -62,9 +54,14 @@ export class GridFSFile extends Typegoose {
             const gfs = Grid(db, mongoDriver);
 
             try {
-                // Retrieve the file from gridfs
+                // Get a write stream to a file in the given directory
+                const filePath = `${dirPath}/${this.filename}`;
+                const writeStream = fs.createWriteStream(filePath);
+
+                // Create a readstream for the file in gridfs
                 const readStream = gfs.createReadStream({
                     _id: self._id,
+                    content_type: self.contentType,
                 });
 
                 // Handle read errors
@@ -73,8 +70,8 @@ export class GridFSFile extends Typegoose {
                     reject(err);
                 });
 
-                // Create a temporary file to save this to
-                const filePath = await tempWrite(readStream, this.filename);
+                // Read the file from gridfs and write it to disk
+                readStream.pipe(writeStream);
 
                 logger.req().info(`${LOG_TAG} successfully read file '${self.filename}' to '${filePath}'`);
                 fulfill(filePath);
@@ -94,7 +91,7 @@ export class GridFSFile extends Typegoose {
         bufferOrPath: Buffer | string,
         mimeType: string,
     ): Promise<InstanceType<GridFSFile>> {
-        logger.info(`${LOG_TAG} saving file to gridfs`);
+        logger.info(`${LOG_TAG} attempting to save file '${name}' with type '${mimeType}' to gridfs`);
 
         return new Promise((fulfill, reject) => {
             // The mongodb instance created when the mongoose.connection is opened
@@ -117,8 +114,10 @@ export class GridFSFile extends Typegoose {
                 // Create a read stream from the data
                 let readStream = undefined;
                 if (typeof bufferOrPath === 'string') {
+                    logger.req().info(`${LOG_TAG} writing file '${name}' from its path ${bufferOrPath}`);
                     readStream = fs.createReadStream(bufferOrPath);
                 } else {
+                    logger.req().info(`${LOG_TAG} writing file '${name}' from buffer`);
                     readStream = streamifier.createReadStream(bufferOrPath);
                 }
 

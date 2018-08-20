@@ -1,3 +1,4 @@
+import fs from 'fs-extra';
 import loadJsonFile from 'load-json-file';
 import mime from 'mime-types';
 import path from 'path';
@@ -14,6 +15,7 @@ import {
     OBJMTLPair,
     OBJMTLPairModel
 } from '../meshes.model';
+import { MeshStorage } from '../meshes.storage';
 
 const LOG_TAG = '[BlenderProcessor]';
 const PYTHON_SCRIPT_PATH = `${__dirname}/prepMeshInBlender.py`;
@@ -40,10 +42,10 @@ export default class BlenderMeshProcessor {
         logger.req().info(`${LOG_TAG} preparing to process mesh '${mesh._id}' in blender`);
 
         // Save original files to disk
-        const filePaths = await BlenderMeshProcessor.saveFilesToDisk(mesh);
+        const meshFilePaths = await BlenderMeshProcessor.saveFilesToDisk(mesh);
 
         // Process files in Blender
-        const blenderResponse = await BlenderMeshProcessor.processInBlender(mesh, filePaths);
+        const blenderResponse = await BlenderMeshProcessor.processInBlender(mesh, meshFilePaths);
 
         // Save files (blend, objs, mtls, images, fbx)
         const updatedMesh = await BlenderMeshProcessor.saveBlenderResponseFiles(mesh, blenderResponse);
@@ -57,7 +59,8 @@ export default class BlenderMeshProcessor {
      * @returns a promise that resolves an array containing the path to each saved file
      */
     private static async saveFilesToDisk(mesh: InstanceType<Mesh>): Promise<string[]> {
-        logger.req().info(`${LOG_TAG} saving mesh files to temp dir`);
+        const tempDirPath = tempy.directory();
+        logger.req().info(`${LOG_TAG} saving mesh files to temp dir '${tempDirPath}'`);
 
         // Populate the mesh file collection so we have access to each file
         const populatedMesh = await mesh.populate({
@@ -69,27 +72,32 @@ export default class BlenderMeshProcessor {
         logger.req().info(`${LOG_TAG} saving '${files.originalFiles.length}' original files from mesh file collection '${files._id}'`);
 
         // Loop over the GridFS files and save them to a temp directory
-        const filePaths = [];
+        const meshFilePaths = [];
         for (let fileIndex = 0; fileIndex < files.originalFiles.length; fileIndex++) {
             const fileRef = <Ref<GridFSFile>>files.originalFiles[fileIndex];
 
             logger.req().info(`${LOG_TAG} getting file '${fileRef}' from DB`);
             const file = await GridFSFileModel.findById(fileRef);
 
-            logger.req().info(`${LOG_TAG} saving file '${file._id}' with name '${file.filename}' to temp`);
-            const filePath = await file.saveToTemp();
-            filePaths.push(filePath);
+            logger.req().info(`${LOG_TAG} saving file '${file._id}' with name '${file.filename}' to ${tempDirPath}`);
+            const filePath = await file.saveToFolder(tempDirPath);
+
+            logger.req().info(`${LOG_TAG} checking whether file '[${file.filename},${file.contentType}]' is a mesh file`);
+            if (MeshStorage.IsMeshFile(file.filename, file.contentType)) {
+                logger.req().info(`${LOG_TAG} '${file.filename} is a mesh file. Adding to list'`);
+                meshFilePaths.push(filePath);
+            }
         }
 
         // Return the path the each file
-        return filePaths;
+        return meshFilePaths;
     }
 
     /**
      * Tells Blender to process the mesh's files with our python script
      * @returns data about the files Blender created during processing
      */
-    private static async processInBlender(mesh: InstanceType<Mesh>, filePaths: string[]): Promise<BlenderResponse> {
+    private static async processInBlender(mesh: InstanceType<Mesh>, meshFilePaths: string[]): Promise<BlenderResponse> {
         logger.req().info(`${LOG_TAG} processing files in blender`);
 
         // Create arguments to pass to our blender python script
@@ -98,7 +106,7 @@ export default class BlenderMeshProcessor {
             "--outputDir", outputDir,
             "--meshId", mesh._id,
             "--meshFilePaths"
-        ].concat(filePaths);
+        ].concat(meshFilePaths);
 
         // Process the mesh in Blender
         const profileId = `blender ${mesh._id}`;
@@ -175,13 +183,11 @@ export default class BlenderMeshProcessor {
         }
 
         // Save textures and reference them in the mesh file collection
-        if (blenderResponse.texturePaths) {
-            const texturePaths = blenderResponse.texturePaths;
-            for (let textureIndex = 0; textureIndex < texturePaths.length; textureIndex++) {
-                const texturePath = texturePaths[textureIndex];
-                const texture = await save(texturePath);
-                files.textures.push(texture);
-            }
+        const texturePaths = blenderResponse.textureFilePaths;
+        for (let textureIndex = 0; textureIndex < texturePaths.length; textureIndex++) {
+            const texturePath = texturePaths[textureIndex];
+            const texture = await save(texturePath);
+            files.textures.push(texture);
         }
 
         // Save references to the files
@@ -207,7 +213,7 @@ interface BlenderResponse {
     objMtlFilePaths: ObjMtlFilePaths[];
 
     /** Paths to the textures created in Blender */
-    texturePaths?: string[];
+    textureFilePaths: string[];
 
     /** Information about the separate parts this mesh is made of */
     partInfo: MeshPartInfo[];

@@ -67,3 +67,6 @@ build/
 
 # Mongo data dir
 data/
+
+# Blender
+*.blend1

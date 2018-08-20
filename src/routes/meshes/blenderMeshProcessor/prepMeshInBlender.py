@@ -207,7 +207,7 @@ def add_unity_collider():
 def save_images_to_textures_dir():
     if len(bpy.data.images) <= 0:
         logging.info( "No images to save")
-        return 
+        return []
 
     logging.info("Saving images...")
     imageFilePaths = []
@@ -218,17 +218,18 @@ def save_images_to_textures_dir():
 
         # pack the image before we change it's path
         try:
+            logging.info("packing image: " + filename)
             image.pack()
         except:
             logging.exception("Failed to pack image '{}'. Moving on...".format(filename))
             continue
  
         # change the images path and save
-        logging.info("filename: " + filename)
-        image.filepath = os.path.join(args.outputDir, filename)
-        logging.info("new filepath: " + image.filepath)
-        image.save()
-        imageFilePaths.append(image.filepath)
+        filepath = os.path.join(args.outputDir, filename)
+        logging.info("saving packed image to: " + filepath)
+        image.save_render(filepath)
+        logging.info("image '{}' saved successfully.".format(filepath))
+        imageFilePaths.append(filepath)
 
     return imageFilePaths
 

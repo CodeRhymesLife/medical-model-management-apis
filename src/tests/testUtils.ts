@@ -37,26 +37,31 @@ export interface TestMesh {
     /** A long description of the mesh */
     longDesc: string;
 
-    /** Path to test mesh */
-    file: Express.Multer.File;
+    /** Path to test mesh files */
+    files: Express.Multer.File[];
 }
 
-/** An enum of files in the test collateral dir */
-export enum TestCollateral {
-    CUBEFBX = 'cube.fbx',
-}
+const rootCollateralDir = `${rootPath}/testCollateral`;
 
-/** Creates a test mesh file */
-export const createTestFile = (file: TestCollateral): Express.Multer.File => {
-    const filename = file.toString();
-    const path = `${rootPath}/testCollateral/${filename}`;
-    return <Express.Multer.File><any>{
-        buffer: fs.readFileSync(path),
-        mimetype: 'octet-stream',
-        originalname: filename,
-        path,
-    };
-};
+/** Shortcusts to files in the test collateral dir */
+export class TestCollateral {
+    public static BlenderImage = TestCollateral.createTestFile('blender.png', 'image/png');
+    public static Cube_FBX = TestCollateral.createTestFile('cube.fbx', 'application/octet-stream');
+    public static Cube_MTL = TestCollateral.createTestFile('cube.mtl', 'text/plain');
+    public static Cube_OBJ = TestCollateral.createTestFile('cube.obj', 'text/plain');
+    public static CubeWithTexture_FBX = TestCollateral.createTestFile('cube_with_img.fbx', 'application/octet-stream');
+
+    /** Creates a test mesh file */
+    public static createTestFile(filename: string, mimeType: string): Express.Multer.File {
+        const path = `${rootPath}/testCollateral/${filename}`;
+        return <Express.Multer.File><any>{
+            buffer: fs.readFileSync(path),
+            mimetype: mimeType,
+            originalname: filename,
+            path,
+        };
+    }
+}
 
 /** A collection of test meshes */
 export interface TestMeshCollection {
@@ -65,6 +70,12 @@ export interface TestMeshCollection {
 
     /** The second test mesh */
     two: TestMesh;
+
+    /** A mesh with textures */
+    withTexture: TestMesh;
+
+    /** An obj mesh */
+    obj: TestMesh;
 }
 
 /** A collection of test data used during tests */
@@ -114,15 +125,32 @@ export const testData: TestData = {
             name: 'Test Mesh 1',
             shortDesc: 'This is a short description',
             longDesc: 'This is a really, really, really long description that\'s not actually all that long',
-            file: createTestFile(TestCollateral.CUBEFBX),
+            files: [TestCollateral.Cube_FBX],
         },
 
         two: {
             name: 'Test Mesh 2',
             shortDesc: undefined,
             longDesc: undefined,
-            file: createTestFile(TestCollateral.CUBEFBX),
-        }
+            files: [TestCollateral.Cube_FBX],
+        },
+
+        withTexture: {
+            name: 'Test Mesh With Textures',
+            shortDesc: undefined,
+            longDesc: undefined,
+            files: [
+                TestCollateral.CubeWithTexture_FBX,
+                TestCollateral.BlenderImage,
+            ],
+        },
+
+        obj: {
+            name: 'Test Mesh - obj file',
+            shortDesc: undefined,
+            longDesc: undefined,
+            files: [TestCollateral.Cube_OBJ, TestCollateral.Cube_MTL],
+        },
     },
 
     invalidId: '5b52594de29d171ae09642da',
@@ -152,8 +180,9 @@ requestClass.prototype.attachTestMesh = function (testMesh: TestMesh): MedModeSu
         this.field('longDesc', testMesh.longDesc);
     }
 
-    if (testMesh.file) {
-        this.attach(FieldName, testMesh.file.path);
+    if (testMesh.files) {
+        const self = this;
+        testMesh.files.forEach((file: Express.Multer.File) => self.attach(FieldName, file.path));
     }
 
     return this;
@@ -171,15 +200,12 @@ export const createUser = (testUser: TestUser): Promise<InstanceType<User>> => {
 
 /** Creates a test mesh based on the specified data */
 export const createMesh = async (owner: InstanceType<User>, testMesh: TestMesh, state?: ResourceStates): Promise<InstanceType<Mesh>> => {
-    const files = <Express.Multer.File[]>[];
-    files.push(<Express.Multer.File><any>(testMesh.file));
-
     const mesh = await MeshModel.createMesh(
         owner,
         testMesh.name,
         testMesh.shortDesc,
         testMesh.longDesc,
-        files
+        testMesh.files
     );
 
     // By default the mesh's state is processing

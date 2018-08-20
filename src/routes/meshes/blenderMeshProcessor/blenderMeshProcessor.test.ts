@@ -2,7 +2,7 @@ import chai from 'chai';
 import { InstanceType } from 'typegoose';
 
 import BlenderMeshProcessor from './blenderMeshProcessor';
-import { MeshFileCollection, OBJMTLPair } from '../meshes.model';
+import { GridFSFile, MeshFileCollection, OBJMTLPair } from '../meshes.model';
 import { User } from '../../users/users.model';
 import { createMesh, createUser, testData } from '../../../tests/testUtils';
 
@@ -40,6 +40,32 @@ describe('## BlenderMeshProcessor tests', () => {
             expect(objMtlPair.mtl).to.be.not.null;
 
             expect(files.textures.length).to.equal(0);
+
+            return Promise.resolve();
         });
+
+        it('process fbx mesh with texture', async () => {
+            // Create the mesh
+            const meshWithTextures = await createMesh(user, testData.meshes.withTexture);
+
+            // Process the mesh
+            const updatedMesh = await BlenderMeshProcessor.process(meshWithTextures);
+
+            // Ensure that references were updated properly
+            const files = <InstanceType<MeshFileCollection>>updatedMesh.files;
+            expect(files.blendFile).not.null;
+            expect(files.fbx).not.null;
+            expect(files.picture).not.null;
+            expect(files.objMtlFiles.length).to.equal(1);
+
+            const objMtlPair = <InstanceType<OBJMTLPair>>files.objMtlFiles[0];
+            expect(objMtlPair.obj).not.null;
+            expect(objMtlPair.mtl).not.null;
+
+            expect(files.textures.length).to.equal(1);
+            expect(files.textures[0]).not.null;
+
+            return Promise.resolve();
+        }).timeout(5000);
     });
 });

@@ -6,7 +6,6 @@ import app from '../../index';
 import settings from '../../config/settings';
 import {
     createMesh,
-    createTestFile,
     createUser,
     request,
     TestCollateral,
@@ -82,7 +81,7 @@ describe('## Mesh APIs', () => {
 
         it('should fail validation when no files are uploaded', async () => {
             const testMeshWithoutFile = <TestMesh>Object.create(testData.meshes.one);
-            testMeshWithoutFile.file = undefined;
+            testMeshWithoutFile.files = undefined;
 
             // Attempt to create a mesh without a name
             const res = await request(app)
@@ -215,7 +214,7 @@ describe('## Mesh APIs', () => {
                 name: 'New name',
                 shortDesc: 'short description',
                 longDesc: 'some very long description. Mamma I made it!',
-                file: createTestFile(TestCollateral.CUBEFBX),
+                files: [TestCollateral.Cube_FBX],
             };
 
             // Save the update
