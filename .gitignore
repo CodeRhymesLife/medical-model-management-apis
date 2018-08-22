@@ -70,3 +70,6 @@ data/
 
 # Blender
 *.blend1
+
+# Binaries
+.bin/
