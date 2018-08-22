@@ -21,6 +21,3 @@ services:
 
 before_script:
   - yarn setup
-
-after_success:
-  - coveralls
