@@ -6,7 +6,7 @@ node_js:
   - "10.4.1"
 
 before_install:
-  - npm i -g npm@version-number
+  - npm i -g npm@6.1.0
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.9.4
   - export PATH="$HOME/.yarn/bin:$PATH"
 
