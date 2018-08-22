@@ -1,5 +1,9 @@
 # Medical Model Management APIs
+
+[![Build Status](https://travis-ci.com/drryanjames/medical-model-management-apis.svg?branch=master)](https://travis-ci.com/drryanjames/medical-model-management-apis)
+
 ###### [Documentation](docs/README.md)
+
 > medmod-apis is a RESTful and scalable node cloud service that processes and manages medical images and 3D models behind secure APIs. It runs on docker and uses Blender and Unity to programatically prepare uploaded data for the web, desktop, mobile, virtual reality, and mixed reality (HoloLens).
 
 I initially developed this service as a backend to support a virtual reality medical imaging viewer I was building (video below). I decided to open source it to give others a tool for managing medical imaging data. My hope is that this project supports medical research in, but not limited to, the following areas:
