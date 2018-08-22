@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [OBJMTLPair](../classes/objmtlpair.md)
+[Medical Model Management APIs](../README.md) > [OBJMTLPair](../classes/objmtlpair.md)
 
 # Class: OBJMTLPair
 
@@ -32,7 +32,7 @@ Represents an OBJ and MTL file
 
 **● mtl**: *`Ref`<[GridFSFile](gridfsfile.md)>*
 
-*Defined in [routes/meshes/meshes.model.ts:156](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L156)*
+*Defined in [routes/meshes/meshes.model.ts:156](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L156)*
 
 The mtl file
 
@@ -43,7 +43,7 @@ ___
 
 **● obj**: *`Ref`<[GridFSFile](gridfsfile.md)>*
 
-*Defined in [routes/meshes/meshes.model.ts:152](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L152)*
+*Defined in [routes/meshes/meshes.model.ts:152](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L152)*
 
 The obj file
 

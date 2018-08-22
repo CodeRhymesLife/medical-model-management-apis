@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [Mesh](../classes/mesh.md)
+[Medical Model Management APIs](../README.md) > [Mesh](../classes/mesh.md)
 
 # Class: Mesh
 
@@ -43,7 +43,7 @@ Represents a Mesh model
 
 **● created**: *`Date`*
 
-*Defined in [routes/meshes/meshes.model.ts:264](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L264)*
+*Defined in [routes/meshes/meshes.model.ts:264](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L264)*
 
 The date the model was created
 
@@ -54,7 +54,7 @@ ___
 
 **● files**: *`Ref`<[MeshFileCollection](meshfilecollection.md)>*
 
-*Defined in [routes/meshes/meshes.model.ts:272](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L272)*
+*Defined in [routes/meshes/meshes.model.ts:272](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L272)*
 
 Files associated with this mesh
 
@@ -65,7 +65,7 @@ ___
 
 **● lastAccessed**: *`Date`*
 
-*Defined in [routes/meshes/meshes.model.ts:268](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L268)*
+*Defined in [routes/meshes/meshes.model.ts:268](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L268)*
 
 The date the model was last accessed
 
@@ -76,7 +76,7 @@ ___
 
 **● longDesc**: *`string`*
 
-*Defined in [routes/meshes/meshes.model.ts:253](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L253)*
+*Defined in [routes/meshes/meshes.model.ts:253](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L253)*
 
 A long description of the model
 
@@ -87,7 +87,7 @@ ___
 
 **● name**: *`string`*
 
-*Defined in [routes/meshes/meshes.model.ts:247](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L247)*
+*Defined in [routes/meshes/meshes.model.ts:247](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L247)*
 
 The name of this model
 
@@ -98,7 +98,7 @@ ___
 
 **● owner**: *`Ref`<[User](user.md)>*
 
-*Defined in [routes/meshes/meshes.model.ts:239](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L239)*
+*Defined in [routes/meshes/meshes.model.ts:239](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L239)*
 
 The owner of this model
 
@@ -109,7 +109,7 @@ ___
 
 **● shortDesc**: *`string`*
 
-*Defined in [routes/meshes/meshes.model.ts:250](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L250)*
+*Defined in [routes/meshes/meshes.model.ts:250](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L250)*
 
 A short description of the model
 
@@ -120,7 +120,7 @@ ___
 
 **● state**: *[ResourceStates](../enums/resourcestates.md)*
 
-*Defined in [routes/meshes/meshes.model.ts:260](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L260)*
+*Defined in [routes/meshes/meshes.model.ts:260](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L260)*
 
 The state of the model
 
@@ -131,7 +131,7 @@ ___
 
 **● version**: *`number`*
 
-*Defined in [routes/meshes/meshes.model.ts:243](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L243)*
+*Defined in [routes/meshes/meshes.model.ts:243](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L243)*
 
 The version of this model
 
@@ -168,7 +168,7 @@ ___
 
 ▸ **isAuthorized**(user: *`InstanceType`<[User](user.md)>*): `boolean`
 
-*Defined in [routes/meshes/meshes.model.ts:276](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L276)*
+*Defined in [routes/meshes/meshes.model.ts:276](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L276)*
 
 Returns whether the given user is authorized to interact with this mesh
 
@@ -210,7 +210,7 @@ ___
 
 ▸ **updateState**(this: *`InstanceType`<[Mesh](mesh.md)>*, newState: *[ResourceStates](../enums/resourcestates.md)*): `Promise`<`boolean`>
 
-*Defined in [routes/meshes/meshes.model.ts:285](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L285)*
+*Defined in [routes/meshes/meshes.model.ts:285](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L285)*
 
 Set the mesh's state
 
@@ -231,7 +231,7 @@ ___
 
 ▸ **createMesh**(this: * `ModelType`<[Mesh](mesh.md)> & [Mesh](mesh.md)*, owner: *`InstanceType`<[User](user.md)>*, name: *`string`*, shortDesc: *`string`*, longDesc: *`string`*, files: *`File`[]*): `Promise`<`InstanceType`<[Mesh](mesh.md)>>
 
-*Defined in [routes/meshes/meshes.model.ts:350](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L350)*
+*Defined in [routes/meshes/meshes.model.ts:350](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L350)*
 
 Create mesh
 
@@ -255,7 +255,7 @@ ___
 
 ▸ **get**(this: * `ModelType`<[Mesh](mesh.md)> & [Mesh](mesh.md)*, user: *`InstanceType`<[User](user.md)>*, id: *`string`*): `Promise`<`InstanceType`<[Mesh](mesh.md)>>
 
-*Defined in [routes/meshes/meshes.model.ts:310](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L310)*
+*Defined in [routes/meshes/meshes.model.ts:310](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L310)*
 
 Gets a model by its id
 

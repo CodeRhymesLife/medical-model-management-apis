@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [MeshProcessor](../classes/meshprocessor.md)
+[Medical Model Management APIs](../README.md) > [MeshProcessor](../classes/meshprocessor.md)
 
 # Class: MeshProcessor
 
@@ -36,7 +36,7 @@ Handles mesh processing. Meshes are processed in a queue using kue. During proce
 
 ⊕ **new MeshProcessor**(): [MeshProcessor](meshprocessor.md)
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:23](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L23)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:23](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L23)*
 
 **Returns:** [MeshProcessor](meshprocessor.md)
 
@@ -50,7 +50,7 @@ ___
 
 **● queue**: *`Queue`*
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:23](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L23)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:23](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L23)*
 
 ___
 <a id="void"></a>
@@ -59,7 +59,7 @@ ___
 
 **● void**: *`any`*
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:82](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L82)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:82](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L82)*
 
 Attach events that are fired as the mesh moves through the queue
 
@@ -73,7 +73,7 @@ ___
 
 ▸ **attachEvents**(job: *`Job`*): `void`
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:82](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L82)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:82](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L82)*
 
 **Parameters:**
 
@@ -90,7 +90,7 @@ ___
 
 ▸ **enqueue**(req: *`Request`*, mesh: *`InstanceType`<[Mesh](mesh.md)>*): `void`
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:34](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L34)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:34](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L34)*
 
 Enque a new mesh for processing
 
@@ -110,7 +110,7 @@ ___
 
 ▸ **process**(job: *`Job`*, done: *`kue.DoneCallback`*): `Promise`<`void`>
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:57](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L57)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:57](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L57)*
 
 Begin processing a mesh
 
@@ -130,7 +130,7 @@ ___
 
 ▸ **createMeshJob**(job: *`Job`*): [MeshJob](../interfaces/meshjob.md)
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:132](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L132)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:132](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L132)*
 
 Create a mesh job from the kue job. Kue returns a job with data that is not typed. We cast the kue job to an object that has the data we need to process the model. When includeMesh is true we retrieve the mesh from the DB
 

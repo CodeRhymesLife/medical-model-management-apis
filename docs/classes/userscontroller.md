@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [UsersController](../classes/userscontroller.md)
+[Medical Model Management APIs](../README.md) > [UsersController](../classes/userscontroller.md)
 
 # Class: UsersController
 
@@ -25,7 +25,7 @@
 
 ▸ **create**(req: *`Request`*, res: *`Response`*, next: *`NextFunction`*): `Promise`< `void` &#124; `Response`>
 
-*Defined in [routes/users/users.controller.ts:32](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.controller.ts#L32)*
+*Defined in [routes/users/users.controller.ts:32](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.controller.ts#L32)*
 
 Create new user from the google id token
 
@@ -46,7 +46,7 @@ ___
 
 ▸ **get**(req: *`Request`*, res: *`Response`*): `Promise`<`void`>
 
-*Defined in [routes/users/users.controller.ts:27](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.controller.ts#L27)*
+*Defined in [routes/users/users.controller.ts:27](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.controller.ts#L27)*
 
 Get user
 
@@ -66,7 +66,7 @@ ___
 
 ▸ **load**(req: *`Request`*, res: *`Response`*, next: *`NextFunction`*, id: *`string`*): `Promise`<`void`>
 
-*Defined in [routes/users/users.controller.ts:15](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.controller.ts#L15)*
+*Defined in [routes/users/users.controller.ts:15](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.controller.ts#L15)*
 
 Load user and append to req.
 
@@ -88,7 +88,7 @@ ___
 
 ▸ **remove**(req: *`Request`*, res: *`Response`*, next: *`NextFunction`*): `Promise`< `void` &#124; `Response`>
 
-*Defined in [routes/users/users.controller.ts:48](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.controller.ts#L48)*
+*Defined in [routes/users/users.controller.ts:48](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.controller.ts#L48)*
 
 Create new user from the google id token
 

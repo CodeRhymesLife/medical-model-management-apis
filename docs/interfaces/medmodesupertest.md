@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [MedModeSuperTest](../interfaces/medmodesupertest.md)
+[Medical Model Management APIs](../README.md) > [MedModeSuperTest](../interfaces/medmodesupertest.md)
 
 # Interface: MedModeSuperTest
 
@@ -210,7 +210,7 @@ ___
 
 ▸ **attachTestMesh**(testMesh: *[TestMesh](testmesh.md)*): [MedModeSuperTest](medmodesupertest.md)
 
-*Defined in [tests/testUtils.ts:163](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L163)*
+*Defined in [tests/testUtils.ts:163](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L163)*
 
 attaches a test mesh to the request
 

@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [Blender](../classes/blender.md)
+[Medical Model Management APIs](../README.md) > [Blender](../classes/blender.md)
 
 # Class: Blender
 
@@ -24,7 +24,7 @@ Communicates with Blender
 
 ▸ **python**(pythonFilePath: *`string`*, scriptArgs: *`string`[]*): `Promise`<`string`>
 
-*Defined in [routes/meshes/blender/blender.ts:14](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blender/blender.ts#L14)*
+*Defined in [routes/meshes/blender/blender.ts:14](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blender/blender.ts#L14)*
 
 Instantiates an instance of Blender with the python script and given arguments
 

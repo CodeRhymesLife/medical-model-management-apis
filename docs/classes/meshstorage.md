@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [MeshStorage](../classes/meshstorage.md)
+[Medical Model Management APIs](../README.md) > [MeshStorage](../classes/meshstorage.md)
 
 # Class: MeshStorage
 
@@ -27,7 +27,7 @@ Handles storing mesh models
 
 ▸ **IsMeshFile**(filename: *`string`*, mimeType: *`string`*): `boolean`
 
-*Defined in [routes/meshes/meshes.storage.ts:44](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.storage.ts#L44)*
+*Defined in [routes/meshes/meshes.storage.ts:44](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.storage.ts#L44)*
 
 Tells whether the given file has a mesh file extension and mime type
 
@@ -48,7 +48,7 @@ ___
 
 ▸ **IsMeshResourceFile**(filename: *`string`*, mimeType: *`string`*): `boolean`
 
-*Defined in [routes/meshes/meshes.storage.ts:53](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.storage.ts#L53)*
+*Defined in [routes/meshes/meshes.storage.ts:53](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.storage.ts#L53)*
 
 Tells whether the given file has a resource file extension and mime type
 
@@ -69,7 +69,7 @@ ___
 
 ▸ **limitFileTypes**(req: *`Request`*, file: *`File`*, callback: *`function`*): `void`
 
-*Defined in [routes/meshes/meshes.storage.ts:59](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.storage.ts#L59)*
+*Defined in [routes/meshes/meshes.storage.ts:59](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.storage.ts#L59)*
 
 Ensure the uploaded files have a valid extension and a valid mimetype
 
@@ -90,7 +90,7 @@ ___
 
 ▸ **uploadFilesToTempDir**(req: *`Request`*, res: *`Response`*, next: *`NextFunction`*): `void`
 
-*Defined in [routes/meshes/meshes.storage.ts:26](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.storage.ts#L26)*
+*Defined in [routes/meshes/meshes.storage.ts:26](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.storage.ts#L26)*
 
 Upload and validates mesh files
 

@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [GoogleUser](../classes/googleuser.md)
+[Medical Model Management APIs](../README.md) > [GoogleUser](../classes/googleuser.md)
 
 # Class: GoogleUser
 
@@ -26,7 +26,7 @@ Represents a google user
 
 **● email**: *`string`*
 
-*Defined in [routes/users/users.model.ts:26](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.model.ts#L26)*
+*Defined in [routes/users/users.model.ts:26](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.model.ts#L26)*
 
 User's email
 
@@ -37,7 +37,7 @@ ___
 
 **● id**: *`string`*
 
-*Defined in [routes/users/users.model.ts:18](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.model.ts#L18)*
+*Defined in [routes/users/users.model.ts:18](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.model.ts#L18)*
 
 Id of the google user
 
@@ -48,7 +48,7 @@ ___
 
 **● name**: *`string`*
 
-*Defined in [routes/users/users.model.ts:22](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.model.ts#L22)*
+*Defined in [routes/users/users.model.ts:22](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.model.ts#L22)*
 
 Name of the user
 

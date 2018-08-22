@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [TestCollateral](../classes/testcollateral.md)
+[Medical Model Management APIs](../README.md) > [TestCollateral](../classes/testcollateral.md)
 
 # Class: TestCollateral
 
@@ -32,7 +32,7 @@ Shortcusts to files in the test collateral dir
 
 **● BlenderImage**: *`File`* =  TestCollateral.createTestFile('blender.png', 'image/png')
 
-*Defined in [tests/testUtils.ts:48](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L48)*
+*Defined in [tests/testUtils.ts:48](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L48)*
 
 ___
 <a id="cubewithtexture_fbx"></a>
@@ -41,7 +41,7 @@ ___
 
 **● CubeWithTexture_FBX**: *`File`* =  TestCollateral.createTestFile('cube_with_img.fbx', 'application/octet-stream')
 
-*Defined in [tests/testUtils.ts:52](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L52)*
+*Defined in [tests/testUtils.ts:52](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L52)*
 
 ___
 <a id="cube_fbx"></a>
@@ -50,7 +50,7 @@ ___
 
 **● Cube_FBX**: *`File`* =  TestCollateral.createTestFile('cube.fbx', 'application/octet-stream')
 
-*Defined in [tests/testUtils.ts:49](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L49)*
+*Defined in [tests/testUtils.ts:49](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L49)*
 
 ___
 <a id="cube_mtl"></a>
@@ -59,7 +59,7 @@ ___
 
 **● Cube_MTL**: *`File`* =  TestCollateral.createTestFile('cube.mtl', 'text/plain')
 
-*Defined in [tests/testUtils.ts:50](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L50)*
+*Defined in [tests/testUtils.ts:50](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L50)*
 
 ___
 <a id="cube_obj"></a>
@@ -68,7 +68,7 @@ ___
 
 **● Cube_OBJ**: *`File`* =  TestCollateral.createTestFile('cube.obj', 'text/plain')
 
-*Defined in [tests/testUtils.ts:51](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L51)*
+*Defined in [tests/testUtils.ts:51](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L51)*
 
 ___
 
@@ -80,7 +80,7 @@ ___
 
 ▸ **createTestFile**(filename: *`string`*, mimeType: *`string`*): `File`
 
-*Defined in [tests/testUtils.ts:55](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L55)*
+*Defined in [tests/testUtils.ts:55](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L55)*
 
 Creates a test mesh file
 

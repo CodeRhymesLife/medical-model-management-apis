@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [User](../classes/user.md)
+[Medical Model Management APIs](../README.md) > [User](../classes/user.md)
 
 # Class: User
 
@@ -40,7 +40,7 @@ Represents a User
 
 **● created**: *`Date`*
 
-*Defined in [routes/users/users.model.ts:37](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.model.ts#L37)*
+*Defined in [routes/users/users.model.ts:37](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.model.ts#L37)*
 
 The date this user was created
 
@@ -51,7 +51,7 @@ ___
 
 **● google**: *[GoogleUser](googleuser.md)*
 
-*Defined in [routes/users/users.model.ts:33](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.model.ts#L33)*
+*Defined in [routes/users/users.model.ts:33](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.model.ts#L33)*
 
 Data from google describing this user
 
@@ -65,7 +65,7 @@ ___
 
 getemail(): `string`
 
-*Defined in [routes/users/users.model.ts:47](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.model.ts#L47)*
+*Defined in [routes/users/users.model.ts:47](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.model.ts#L47)*
 
 User's email
 
@@ -78,7 +78,7 @@ ___
 
 getisMaster(): `boolean`
 
-*Defined in [routes/users/users.model.ts:52](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.model.ts#L52)*
+*Defined in [routes/users/users.model.ts:52](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.model.ts#L52)*
 
 Returns whether this user is a master user
 
@@ -91,7 +91,7 @@ ___
 
 getname(): `string`
 
-*Defined in [routes/users/users.model.ts:41](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.model.ts#L41)*
+*Defined in [routes/users/users.model.ts:41](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.model.ts#L41)*
 
 User's name
 
@@ -153,7 +153,7 @@ ___
 
 ▸ **createUser**(this: * `ModelType`<[User](user.md)> & [User](user.md)*, googleId: *`string`*, googleName: *`string`*, googleEmail: *`string`*): `Promise`<`InstanceType`<[User](user.md)>>
 
-*Defined in [routes/users/users.model.ts:82](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.model.ts#L82)*
+*Defined in [routes/users/users.model.ts:82](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.model.ts#L82)*
 
 Create user
 
@@ -175,7 +175,7 @@ ___
 
 ▸ **getUser**(this: * `ModelType`<[User](user.md)> & [User](user.md)*, id: *`string`*): `Promise`<`InstanceType`<[User](user.md)>>
 
-*Defined in [routes/users/users.model.ts:61](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.model.ts#L61)*
+*Defined in [routes/users/users.model.ts:61](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.model.ts#L61)*
 
 Get user
 

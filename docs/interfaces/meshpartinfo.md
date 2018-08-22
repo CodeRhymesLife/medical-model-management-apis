@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [MeshPartInfo](../interfaces/meshpartinfo.md)
+[Medical Model Management APIs](../README.md) > [MeshPartInfo](../interfaces/meshpartinfo.md)
 
 # Interface: MeshPartInfo
 
@@ -26,7 +26,7 @@ Meshes can be segmented into individdual parts. Knowing this information is usef
 
 **● internalName**: *`string`*
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:242](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L242)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:242](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L242)*
 
 Our internal name of the part
 
@@ -37,7 +37,7 @@ ___
 
 **● name**: *`string`*
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:245](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L245)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:245](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L245)*
 
 A display name of the part
 
@@ -48,7 +48,7 @@ ___
 
 **● originalName**: *`string`*
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:239](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L239)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:239](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L239)*
 
 The original name of the part in Blender
 

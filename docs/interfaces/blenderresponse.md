@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [BlenderResponse](../interfaces/blenderresponse.md)
+[Medical Model Management APIs](../README.md) > [BlenderResponse](../interfaces/blenderresponse.md)
 
 # Interface: BlenderResponse
 
@@ -29,7 +29,7 @@ Represents data contained in the response from Blender
 
 **● blendFilePath**: *`string`*
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:204](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L204)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:204](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L204)*
 
 The path to the blend file created in Blender
 
@@ -40,7 +40,7 @@ ___
 
 **● fbxFilePath**: *`string`*
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:210](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L210)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:210](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L210)*
 
 The path to the FBX file created in Blender
 
@@ -51,7 +51,7 @@ ___
 
 **● objMtlFilePaths**: *[ObjMtlFilePaths](objmtlfilepaths.md)[]*
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:213](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L213)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:213](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L213)*
 
 Paths to the .obj and .mtl files created in Blender
 
@@ -62,7 +62,7 @@ ___
 
 **● partInfo**: *[MeshPartInfo](meshpartinfo.md)[]*
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:219](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L219)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:219](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L219)*
 
 Information about the separate parts this mesh is made of
 
@@ -73,7 +73,7 @@ ___
 
 **● pictureFilePath**: *`string`*
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:207](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L207)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:207](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L207)*
 
 The path to the picture created in Blender
 
@@ -84,7 +84,7 @@ ___
 
 **● textureFilePaths**: *`string`[]*
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:216](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L216)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:216](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L216)*
 
 Paths to the textures created in Blender
 

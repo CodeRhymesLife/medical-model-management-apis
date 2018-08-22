@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [ExtendableError](../classes/extendableerror.md)
+[Medical Model Management APIs](../README.md) > [ExtendableError](../classes/extendableerror.md)
 
 # Class: ExtendableError
 
@@ -38,7 +38,7 @@
 
 ⊕ **new ExtendableError**(message: *`string`*, status: *`Number`*, isPublic: *`boolean`*): [ExtendableError](extendableerror.md)
 
-*Defined in [routes/helpers/APIError.ts:14](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/helpers/APIError.ts#L14)*
+*Defined in [routes/helpers/APIError.ts:14](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/helpers/APIError.ts#L14)*
 
 **Parameters:**
 
@@ -60,7 +60,7 @@ ___
 
 **● isOperational**: *`boolean`*
 
-*Defined in [routes/helpers/APIError.ts:14](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/helpers/APIError.ts#L14)*
+*Defined in [routes/helpers/APIError.ts:14](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/helpers/APIError.ts#L14)*
 
 Is this error operational
 
@@ -71,7 +71,7 @@ ___
 
 **● isPublic**: *`boolean`*
 
-*Defined in [routes/helpers/APIError.ts:11](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/helpers/APIError.ts#L11)*
+*Defined in [routes/helpers/APIError.ts:11](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/helpers/APIError.ts#L11)*
 
 Is this error public
 
@@ -117,7 +117,7 @@ ___
 
 **● status**: *`Number`*
 
-*Defined in [routes/helpers/APIError.ts:8](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/helpers/APIError.ts#L8)*
+*Defined in [routes/helpers/APIError.ts:8](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/helpers/APIError.ts#L8)*
 
 Http status code
 

@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [MeshJobData](../interfaces/meshjobdata.md)
+[Medical Model Management APIs](../README.md) > [MeshJobData](../interfaces/meshjobdata.md)
 
 # Interface: MeshJobData
 
@@ -26,7 +26,7 @@ Data for a mesh job
 
 **● loggerData**: *[LoggerData](loggerdata.md)*
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:156](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L156)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:156](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L156)*
 
 Data about the logger
 
@@ -37,7 +37,7 @@ ___
 
 **● mesh**: *`InstanceType`<[Mesh](../classes/mesh.md)>*
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:162](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L162)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:162](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L162)*
 
 The mesh to process
 
@@ -48,7 +48,7 @@ ___
 
 **● meshId**: *`string`*
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:159](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L159)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:159](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L159)*
 
 The mesh's id
 

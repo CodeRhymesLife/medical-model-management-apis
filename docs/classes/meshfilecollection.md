@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [MeshFileCollection](../classes/meshfilecollection.md)
+[Medical Model Management APIs](../README.md) > [MeshFileCollection](../classes/meshfilecollection.md)
 
 # Class: MeshFileCollection
 
@@ -37,7 +37,7 @@ File associated with the mesh
 
 **● blendFile**: *`Ref`<[GridFSFile](gridfsfile.md)>*
 
-*Defined in [routes/meshes/meshes.model.ts:163](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L163)*
+*Defined in [routes/meshes/meshes.model.ts:163](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L163)*
 
 Blend file
 
@@ -48,7 +48,7 @@ ___
 
 **● fbx**: *`Ref`<[GridFSFile](gridfsfile.md)>*
 
-*Defined in [routes/meshes/meshes.model.ts:166](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L166)*
+*Defined in [routes/meshes/meshes.model.ts:166](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L166)*
 
 FBX file of the model
 
@@ -59,7 +59,7 @@ ___
 
 **● objMtlFiles**: *`Ref`<[OBJMTLPair](objmtlpair.md)>[]*
 
-*Defined in [routes/meshes/meshes.model.ts:170](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L170)*
+*Defined in [routes/meshes/meshes.model.ts:170](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L170)*
 
 List of obj and mtl files
 
@@ -70,7 +70,7 @@ ___
 
 **● originalFiles**: *`Ref`<[GridFSFile](gridfsfile.md)>[]*
 
-*Defined in [routes/meshes/meshes.model.ts:174](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L174)*
+*Defined in [routes/meshes/meshes.model.ts:174](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L174)*
 
 Array of associated files
 
@@ -81,7 +81,7 @@ ___
 
 **● picture**: *`Ref`<[GridFSFile](gridfsfile.md)>*
 
-*Defined in [routes/meshes/meshes.model.ts:178](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L178)*
+*Defined in [routes/meshes/meshes.model.ts:178](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L178)*
 
 Picture of the mesh
 
@@ -92,7 +92,7 @@ ___
 
 **● textures**: *`Ref`<[GridFSFile](gridfsfile.md)>[]*
 
-*Defined in [routes/meshes/meshes.model.ts:182](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L182)*
+*Defined in [routes/meshes/meshes.model.ts:182](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L182)*
 
 Textures
 
@@ -152,7 +152,7 @@ ___
 
 ▸ **createWithOriginalFiles**(this: * `ModelType`<[MeshFileCollection](meshfilecollection.md)> & [MeshFileCollection](meshfilecollection.md)*, files: *`File`[]*): `Promise`<`InstanceType`<[MeshFileCollection](meshfilecollection.md)>>
 
-*Defined in [routes/meshes/meshes.model.ts:186](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L186)*
+*Defined in [routes/meshes/meshes.model.ts:186](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L186)*
 
 Saves the given files in the DB and returns a mesh file collection
 

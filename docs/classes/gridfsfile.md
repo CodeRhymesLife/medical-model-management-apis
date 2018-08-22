@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [GridFSFile](../classes/gridfsfile.md)
+[Medical Model Management APIs](../README.md) > [GridFSFile](../classes/gridfsfile.md)
 
 # Class: GridFSFile
 
@@ -34,7 +34,7 @@ Represents a gridfs file
 
 **● contentType**: *`string`*
 
-*Defined in [routes/meshes/meshes.model.ts:36](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L36)*
+*Defined in [routes/meshes/meshes.model.ts:36](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L36)*
 
 The type of the file's content. Used like mimetype
 
@@ -45,7 +45,7 @@ ___
 
 **● filename**: *`string`*
 
-*Defined in [routes/meshes/meshes.model.ts:32](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L32)*
+*Defined in [routes/meshes/meshes.model.ts:32](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L32)*
 
 The file's name
 
@@ -82,7 +82,7 @@ ___
 
 ▸ **saveToFolder**(this: *`InstanceType`<[GridFSFile](gridfsfile.md)>*, dirPath: *`string`*): `Promise`<`string`>
 
-*Defined in [routes/meshes/meshes.model.ts:40](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L40)*
+*Defined in [routes/meshes/meshes.model.ts:40](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L40)*
 
 Reads the file from gridfs
 
@@ -125,7 +125,7 @@ ___
 
 ▸ **save**(this: * `ModelType`<[GridFSFile](gridfsfile.md)> & [GridFSFile](gridfsfile.md)*, name: *`string`*, bufferOrPath: * `Buffer` &#124; `string`*, mimeType: *`string`*): `Promise`<`InstanceType`<[GridFSFile](gridfsfile.md)>>
 
-*Defined in [routes/meshes/meshes.model.ts:88](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.model.ts#L88)*
+*Defined in [routes/meshes/meshes.model.ts:88](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.model.ts#L88)*
 
 Save file buffer to gridfs
 

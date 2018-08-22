@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [APIError](../classes/apierror.md)
+[Medical Model Management APIs](../README.md) > [APIError](../classes/apierror.md)
 
 # Class: APIError
 
@@ -38,7 +38,7 @@ Class representing an API error.
 
 *Overrides [ExtendableError](extendableerror.md).[constructor](extendableerror.md#constructor)*
 
-*Defined in [routes/helpers/APIError.ts:31](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/helpers/APIError.ts#L31)*
+*Defined in [routes/helpers/APIError.ts:31](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/helpers/APIError.ts#L31)*
 
 Creates an API error.
 
@@ -64,7 +64,7 @@ ___
 
 *Inherited from [ExtendableError](extendableerror.md).[isOperational](extendableerror.md#isoperational)*
 
-*Defined in [routes/helpers/APIError.ts:14](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/helpers/APIError.ts#L14)*
+*Defined in [routes/helpers/APIError.ts:14](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/helpers/APIError.ts#L14)*
 
 Is this error operational
 
@@ -77,7 +77,7 @@ ___
 
 *Inherited from [ExtendableError](extendableerror.md).[isPublic](extendableerror.md#ispublic)*
 
-*Defined in [routes/helpers/APIError.ts:11](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/helpers/APIError.ts#L11)*
+*Defined in [routes/helpers/APIError.ts:11](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/helpers/APIError.ts#L11)*
 
 Is this error public
 
@@ -125,7 +125,7 @@ ___
 
 *Inherited from [ExtendableError](extendableerror.md).[status](extendableerror.md#status)*
 
-*Defined in [routes/helpers/APIError.ts:8](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/helpers/APIError.ts#L8)*
+*Defined in [routes/helpers/APIError.ts:8](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/helpers/APIError.ts#L8)*
 
 Http status code
 

@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [MeshJob](../interfaces/meshjob.md)
+[Medical Model Management APIs](../README.md) > [MeshJob](../interfaces/meshjob.md)
 
 # Interface: MeshJob
 
@@ -177,7 +177,7 @@ ___
 
 **● meshData**: *[MeshJobData](meshjobdata.md)*
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:147](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L147)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:147](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L147)*
 
 Data for this job
 
@@ -200,7 +200,7 @@ ___
 
 **● reqLogger**: *`any`*
 
-*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:150](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshProcessing/meshProcessor.ts#L150)*
+*Defined in [routes/meshes/meshProcessing/meshProcessor.ts:150](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshProcessing/meshProcessor.ts#L150)*
 
 Logger associated with the request
 

@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [GoogleAuthData](../interfaces/googleauthdata.md)
+[Medical Model Management APIs](../README.md) > [GoogleAuthData](../interfaces/googleauthdata.md)
 
 # Interface: GoogleAuthData
 
@@ -27,7 +27,7 @@ Data returned from verifyIdToken
 
 **● email**: *`string`*
 
-*Defined in [routes/users/users.auth.ts:29](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.auth.ts#L29)*
+*Defined in [routes/users/users.auth.ts:29](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.auth.ts#L29)*
 
 The user's email
 
@@ -38,7 +38,7 @@ ___
 
 **● id**: *`string`*
 
-*Defined in [routes/users/users.auth.ts:23](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.auth.ts#L23)*
+*Defined in [routes/users/users.auth.ts:23](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.auth.ts#L23)*
 
 The user's google id
 
@@ -49,7 +49,7 @@ ___
 
 **● idToken**: *`string`*
 
-*Defined in [routes/users/users.auth.ts:20](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.auth.ts#L20)*
+*Defined in [routes/users/users.auth.ts:20](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.auth.ts#L20)*
 
 Id token returned from google auth
 
@@ -60,7 +60,7 @@ ___
 
 **● name**: *`string`*
 
-*Defined in [routes/users/users.auth.ts:26](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/users/users.auth.ts#L26)*
+*Defined in [routes/users/users.auth.ts:26](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/users/users.auth.ts#L26)*
 
 The user's name
 

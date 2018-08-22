@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [MeshModelController](../classes/meshmodelcontroller.md)
+[Medical Model Management APIs](../README.md) > [MeshModelController](../classes/meshmodelcontroller.md)
 
 # Class: MeshModelController
 
@@ -27,7 +27,7 @@
 
 ▸ **create**(req: *`Request`*, res: *`Response`*, next: *`NextFunction`*): `Promise`< `void` &#124; `Response`>
 
-*Defined in [routes/meshes/meshes.controller.ts:52](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.controller.ts#L52)*
+*Defined in [routes/meshes/meshes.controller.ts:52](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.controller.ts#L52)*
 
 Create new mesh from the passed in files
 
@@ -48,7 +48,7 @@ ___
 
 ▸ **get**(req: *`Request`*, res: *`Response`*): `Promise`<`void`>
 
-*Defined in [routes/meshes/meshes.controller.ts:47](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.controller.ts#L47)*
+*Defined in [routes/meshes/meshes.controller.ts:47](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.controller.ts#L47)*
 
 Get loaded mesh
 
@@ -68,7 +68,7 @@ ___
 
 ▸ **list**(req: *`Request`*, res: *`Response`*, next: *`NextFunction`*): `Promise`< `void` &#124; `Response`>
 
-*Defined in [routes/meshes/meshes.controller.ts:33](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.controller.ts#L33)*
+*Defined in [routes/meshes/meshes.controller.ts:33](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.controller.ts#L33)*
 
 List the meshes associated with the given user
 
@@ -89,7 +89,7 @@ ___
 
 ▸ **load**(req: *`Request`*, res: *`Response`*, next: *`NextFunction`*, id: *`string`*): `Promise`<`void`>
 
-*Defined in [routes/meshes/meshes.controller.ts:17](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.controller.ts#L17)*
+*Defined in [routes/meshes/meshes.controller.ts:17](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.controller.ts#L17)*
 
 Load mesh and append to req.
 
@@ -111,7 +111,7 @@ ___
 
 ▸ **remove**(req: *`Request`*, res: *`Response`*, next: *`NextFunction`*): `Promise`< `void` &#124; `Response`>
 
-*Defined in [routes/meshes/meshes.controller.ts:98](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.controller.ts#L98)*
+*Defined in [routes/meshes/meshes.controller.ts:98](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.controller.ts#L98)*
 
 Remove the mesh by id
 
@@ -132,7 +132,7 @@ ___
 
 ▸ **update**(req: *`Request`*, res: *`Response`*, next: *`NextFunction`*): `Promise`< `void` &#124; `Response`>
 
-*Defined in [routes/meshes/meshes.controller.ts:75](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/meshes.controller.ts#L75)*
+*Defined in [routes/meshes/meshes.controller.ts:75](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/meshes.controller.ts#L75)*
 
 Updates mesh metadata, but not its files
 

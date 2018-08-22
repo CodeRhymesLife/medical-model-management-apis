@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [TestUser](../interfaces/testuser.md)
+[Medical Model Management APIs](../README.md) > [TestUser](../interfaces/testuser.md)
 
 # Interface: TestUser
 
@@ -25,7 +25,7 @@ A test user
 
 **● auth**: *[GoogleAuthData](googleauthdata.md)*
 
-*Defined in [tests/testUtils.ts:14](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L14)*
+*Defined in [tests/testUtils.ts:14](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L14)*
 
 The test user's fake auth data
 
@@ -36,7 +36,7 @@ ___
 
 **● idToken**: *`string`*
 
-*Defined in [tests/testUtils.ts:17](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L17)*
+*Defined in [tests/testUtils.ts:17](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L17)*
 
 The test user's id token, which is just a strigified version of the auth data
 

@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [TestMesh](../interfaces/testmesh.md)
+[Medical Model Management APIs](../README.md) > [TestMesh](../interfaces/testmesh.md)
 
 # Interface: TestMesh
 
@@ -27,7 +27,7 @@ Data for a mesh
 
 **● files**: *`File`[]*
 
-*Defined in [tests/testUtils.ts:41](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L41)*
+*Defined in [tests/testUtils.ts:41](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L41)*
 
 Path to test mesh files
 
@@ -38,7 +38,7 @@ ___
 
 **● longDesc**: *`string`*
 
-*Defined in [tests/testUtils.ts:38](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L38)*
+*Defined in [tests/testUtils.ts:38](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L38)*
 
 A long description of the mesh
 
@@ -49,7 +49,7 @@ ___
 
 **● name**: *`string`*
 
-*Defined in [tests/testUtils.ts:32](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L32)*
+*Defined in [tests/testUtils.ts:32](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L32)*
 
 The name of the mesh
 
@@ -60,7 +60,7 @@ ___
 
 **● shortDesc**: *`string`*
 
-*Defined in [tests/testUtils.ts:35](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L35)*
+*Defined in [tests/testUtils.ts:35](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L35)*
 
 A short description of the mesh
 

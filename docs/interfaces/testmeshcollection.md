@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [TestMeshCollection](../interfaces/testmeshcollection.md)
+[Medical Model Management APIs](../README.md) > [TestMeshCollection](../interfaces/testmeshcollection.md)
 
 # Interface: TestMeshCollection
 
@@ -27,7 +27,7 @@ A collection of test meshes
 
 **● objMtl**: *[TestMesh](testmesh.md)*
 
-*Defined in [tests/testUtils.ts:78](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L78)*
+*Defined in [tests/testUtils.ts:78](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L78)*
 
 An obj mesh
 
@@ -38,7 +38,7 @@ ___
 
 **● one**: *[TestMesh](testmesh.md)*
 
-*Defined in [tests/testUtils.ts:69](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L69)*
+*Defined in [tests/testUtils.ts:69](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L69)*
 
 The first test mesh
 
@@ -49,7 +49,7 @@ ___
 
 **● two**: *[TestMesh](testmesh.md)*
 
-*Defined in [tests/testUtils.ts:72](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L72)*
+*Defined in [tests/testUtils.ts:72](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L72)*
 
 The second test mesh
 
@@ -60,7 +60,7 @@ ___
 
 **● withTexture**: *[TestMesh](testmesh.md)*
 
-*Defined in [tests/testUtils.ts:75](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/tests/testUtils.ts#L75)*
+*Defined in [tests/testUtils.ts:75](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/tests/testUtils.ts#L75)*
 
 A mesh with textures
 

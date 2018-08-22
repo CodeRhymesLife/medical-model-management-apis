@@ -1,4 +1,4 @@
-[medical-model-manager-apis](../README.md) > [BlenderMeshProcessor](../classes/blendermeshprocessor.md)
+[Medical Model Management APIs](../README.md) > [BlenderMeshProcessor](../classes/blendermeshprocessor.md)
 
 # Class: BlenderMeshProcessor
 
@@ -27,7 +27,7 @@ Processes meshes in Blender To prepare a mesh to be viewed in third part applica
 
 ▸ **process**(mesh: *`InstanceType`<[Mesh](mesh.md)>*): `Promise`<`InstanceType`<[Mesh](mesh.md)>>
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:41](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L41)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:41](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L41)*
 
 Processes the given mesh in Blender by: 1) Saving its files to disk so they can be read by Blender 2) Processing the files in Blender with a python script 3) Saving the files Blender produces (listed bleow) to the DB
 
@@ -53,7 +53,7 @@ ___
 
 ▸ **processInBlender**(mesh: *`InstanceType`<[Mesh](mesh.md)>*, meshFilePaths: *`string`[]*): `Promise`<[BlenderResponse](../interfaces/blenderresponse.md)>
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:100](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L100)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:100](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L100)*
 
 Tells Blender to process the mesh's files with our python script
 
@@ -74,7 +74,7 @@ ___
 
 ▸ **saveBlenderResponseFiles**(mesh: *`InstanceType`<[Mesh](mesh.md)>*, blenderResponse: *[BlenderResponse](../interfaces/blenderresponse.md)*): `Promise`<`InstanceType`<[Mesh](mesh.md)>>
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:141](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L141)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:141](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L141)*
 
 Blender produces several files while it's processing. This function saves those files to the DB
 
@@ -94,7 +94,7 @@ ___
 
 ▸ **saveFilesToDisk**(mesh: *`InstanceType`<[Mesh](mesh.md)>*): `Promise`<`string`[]>
 
-*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:61](https://github.com/drryanjames/medical-model-management-apis/blob/8ee5c63/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L61)*
+*Defined in [routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts:61](https://github.com/drryanjames/medical-model-management-apis/blob/53e4d53/src/routes/meshes/blenderMeshProcessor/blenderMeshProcessor.ts#L61)*
 
 Saves mesh files from gridfs to disk so Blender can read them
 
