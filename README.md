@@ -34,6 +34,6 @@ Here are a few applications that use this service:
 
 [![Baby Z](https://i.ytimg.com/vi_webp/8SUFeplhgBI/hqdefault.webp)](https://www.youtube.com/watch?v=8SUFeplhgBI, "Baby Z")
 
-[![IR Procedural Guidance](https://user-images.githubusercontent.com/2764891/44436599-f7f5d600-a56a-11e8-9fde-1a2373b0f44c.png)](https://drive.google.com/a/pyrusmedical.com/file/d/1lUXK06cWIYIcm8cMJcoedTnnCohcmmdV/view?usp=drivesdk, "IR Procedural Guidance")
-
 [![EP Procedural Guidance](https://user-images.githubusercontent.com/2764891/44436623-1eb40c80-a56b-11e8-949d-e2d1d00ff861.png)](https://drive.google.com/a/pyrusmedical.com/file/d/1Pss_oNLa64zbB8OdCJjUB1zj7Vb4KNYv/view?usp=drivesdk, "EP Procedural Guidance")
+
+[![IR Procedural Guidance](https://user-images.githubusercontent.com/2764891/44436599-f7f5d600-a56a-11e8-9fde-1a2373b0f44c.png)](https://drive.google.com/a/pyrusmedical.com/file/d/1lUXK06cWIYIcm8cMJcoedTnnCohcmmdV/view?usp=drivesdk, "IR Procedural Guidance")
