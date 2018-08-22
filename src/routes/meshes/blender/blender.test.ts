@@ -19,7 +19,9 @@ describe('## Blender Tests', () => {
         );
 
         // Verify Blender returned expected results
-        expect(result).to.include('{"testString": "some test string", "testArray": ["first", "second"], "testFlat": true}');
+        expect(result).to.include('"testString": "some test string"');
+        expect(result).to.include('"testArray": ["first", "second"]');
+        expect(result).to.include('"testFlag": true');
         return Promise.resolve();
     });
 });

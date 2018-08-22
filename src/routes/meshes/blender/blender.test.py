@@ -14,5 +14,5 @@ args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
 print(json.dumps({
     'testString': args.testString,
     'testArray': args.testArray,
-    'testFlat': args.testFlag,
+    'testFlag': args.testFlag,
 }))
