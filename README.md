@@ -26,3 +26,11 @@ This project is unfinished but in active development. Please send me a message i
 
 ## Deploying a Production Server
 `yarn deploy:prod`
+
+## Videos
+Here are a few applications that use this service:
+
+[![Bosc](https://img.youtube.com/vi/H1NS6GyttLg/0.jpg)](https://www.youtube.com/watch?v=H1NS6GyttLg "Bosc")
+
+[![Baby Z](https://i.ytimg.com/vi_webp/8SUFeplhgBI/hqdefault.webp)](https://www.youtube.com/embed/8SUFeplhgBI, "Baby Z")
+
