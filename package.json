@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "yarn deploy:dev",
-    "docs": "./node_modules/.bin/typedoc --theme markdown --out docs/ src/",
+    "docs": "./node_modules/.bin/typedoc --theme markdown --mode file --out docs/ src/",
     "lint": "yarn local:lint",
     "setup": "yarn && yarn setup:settings",
     "test": "yarn deploy:test",
