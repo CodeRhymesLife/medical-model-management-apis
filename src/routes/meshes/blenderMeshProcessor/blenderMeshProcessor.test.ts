@@ -66,7 +66,7 @@ describe('## BlenderMeshProcessor tests', () => {
 
             return Promise.resolve();
         });
- 
+
         it('process fbx mesh with texture', async () => {
             // Create the mesh
             const meshWithTextures = await createMesh(user, testData.meshes.withTexture);
