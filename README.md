@@ -27,6 +27,9 @@ This project is unfinished but in active development. Please send me a message i
 ## Deploying a Production Server
 `yarn deploy:prod`
 
+## Generating Documentation
+`yarn docs`
+
 ## Videos
 Here are a few applications that use this service:
 
