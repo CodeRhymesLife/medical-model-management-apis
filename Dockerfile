@@ -1,13 +1,13 @@
 FROM node:10.9.0-stretch
 
 # Download blender
-RUN wget -P /opt/blender/ https://builder.blender.org/download//blender-2.79-4b0b91aee07-linux-glibc219-x86_64.tar.bz2
+RUN wget -P /opt/blender/ http://download.blender.org/release/Blender2.79/blender-2.79-linux-glibc219-x86_64.tar.bz2
 
 # Unpack Blender
-RUN tar xvjf /opt/blender/blender-2.79-4b0b91aee07-linux-glibc219-x86_64.tar.bz2 -C /opt/blender/
+RUN tar xvjf /opt/blender/blender-2.79-linux-glibc219-x86_64.tar.bz2 -C /opt/blender/
 
 # Add Blender to PATH
-ENV PATH="/opt/blender/blender-2.79-4b0b91aee07-linux-glibc219-x86_64:${PATH}"
+ENV PATH="/opt/blender/blender-2.79-linux-glibc219-x86_64:${PATH}"
 
 # Install related Blender  packages
 RUN apt-get -y update && \
