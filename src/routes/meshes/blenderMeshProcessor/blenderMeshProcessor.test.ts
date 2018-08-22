@@ -89,6 +89,6 @@ describe('## BlenderMeshProcessor tests', () => {
             expect(files.textures[0]).not.null;
 
             return Promise.resolve();
-        }).timeout(5000);
+        }).timeout(10000);
    });
 });
