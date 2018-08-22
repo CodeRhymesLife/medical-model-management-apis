@@ -32,5 +32,6 @@ Here are a few applications that use this service:
 
 [![Bosc](https://img.youtube.com/vi/H1NS6GyttLg/0.jpg)](https://www.youtube.com/watch?v=H1NS6GyttLg "Bosc")
 
-[![Baby Z](https://i.ytimg.com/vi_webp/8SUFeplhgBI/hqdefault.webp)](https://www.youtube.com/embed/8SUFeplhgBI, "Baby Z")
+[![Baby Z](https://i.ytimg.com/vi_webp/8SUFeplhgBI/hqdefault.webp)](https://www.youtube.com/watch?v=8SUFeplhgBI, "Baby Z")
 
+[![EP Procedural Guidance](https://lh4.googleusercontent.com/smVXEiOO_DcIATnPBqQMlCq8VomcvzKyWJBAt28wBfXf5zdJ3gZDwnoorvMSmJlaDaqYp777XE-fcfjKgK2Z=w640-h360-n-k-rw)](https://drive.google.com/a/pyrusmedical.com/file/d/1Pss_oNLa64zbB8OdCJjUB1zj7Vb4KNYv/view?usp=drivesdk, "EP Procedural Guidance")
