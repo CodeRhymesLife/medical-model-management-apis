@@ -1,13 +1,18 @@
-# Medical Model Management: APIs
-> MedMod-APIs is a RESTful and scalable node cloud service that processes and manages medical images and 3D models. MedMod-APIs run on docker and process models programatically using Blender and Unity.
+# Medical Model Management APIs
+###### [Documentation](docs/README.md)
+> medmod-apis is a RESTful and scalable node cloud service that processes and manages medical images and 3D models behind secure APIs. It runs on docker and uses Blender and Unity to programatically prepare uploaded data for the web, desktop, mobile, virtual reality, and mixed reality (HoloLens).
 
-I initially developed these APIs as a backend to support a virtual reality medical imaging viewer (video below). I decided to open source this work to give others a foundational tool for medical model management and image processing. My hope is that this project supports medical research in, but not limited to, the following areas:
+I initially developed this service as a backend to support a virtual reality medical imaging viewer I was building (video below). I decided to open source it to give others a tool for managing medical imaging data. My hope is that this project supports medical research in, but not limited to, the following areas:
 - Virtual and Mixed Reality
 - AI / Machine Learning / Image Processing
 - Medical Simulation / Training
 - Surgical Planning
 - Procedural Guidance
 - 3D Printing
+
+## Architectural Diagram
+This architectural diagram gives a high level depiction of this service and shows example POST and GET requests to the ```/meshes``` API
+![bosc apis architecture diagram 2](https://user-images.githubusercontent.com/2764891/44445775-386b4900-a597-11e8-83ec-59e75d2ae6b4.png)
 
 ## Status
 This project is unfinished but in active development. Please send me a message if you are interested in staying up to date.
