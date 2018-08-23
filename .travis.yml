@@ -21,3 +21,6 @@ services:
 
 before_script:
   - yarn setup
+
+script:
+  - yarn deploy:travis
