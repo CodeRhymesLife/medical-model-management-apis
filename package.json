@@ -4,7 +4,7 @@
   "description": "APIs for managing medical models",
   "repository": {
     "type": "git",
-    "url": "git@github.com:drryanjames/medical-model-manager-apis.git"
+    "url": "https://github.com/drryanjames/medical-model-management-apis.git"
   },
   "author": "Ryan James <rcjames1004@gmail.com>",
   "license": "none",
@@ -33,8 +33,9 @@
     "local:prod:start": "yarn local:build && cross-env NODE_ENV=production pm2 start build --name medical-model-manager-apis && pm2 logs medical-model-manager-apis",
     "local:prod:stop": "pm2 delete medical-model-manager-apis",
     "local:report-coverage": "coveralls < ./coverage/lcov.info",
-    "local:test": "cross-env PORT=3000 NODE_ENV=test MONGO_HOST=mongodb://mongo:27017/medmod-test ./node_modules/.bin/nyc ./node_modules/.bin/mocha \"build/**/*.test.js\" --ui bdd --reporter spec --colors src --recursive --timeout 20000 --exit",
-    "local:test:coverage": "./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
+    "local:test": "cross-env PORT=3000 NODE_ENV=test MONGO_HOST=mongodb://mongo:27017/medmod-test ./node_modules/.bin/mocha \"build/**/*.test.js\" --recursive --timeout 20000 --exit",
+    "local:test:coverage": "./node_modules/.bin/nyc yarn local:test",
+    "local:test:coverage:report": "./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
     "precommit": "yarn lint && yarn test",
     "setup:settings": "cp -n ./src/config/settings.example.json ./src/config/settings.json && cp -n .env.example .env && echo 'Update src/config/settings.json and .env with your environment specific values!!!!!!'"
   },
