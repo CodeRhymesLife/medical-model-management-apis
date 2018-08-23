@@ -1,6 +1,7 @@
 # Medical Model Management APIs
 
 [![Build Status](https://travis-ci.com/drryanjames/medical-model-management-apis.svg?branch=master)](https://travis-ci.com/drryanjames/medical-model-management-apis)
+[![Coverage Status](https://coveralls.io/repos/github/drryanjames/medical-model-management-apis/badge.svg?branch=master)](https://coveralls.io/github/drryanjames/medical-model-management-apis?branch=master)
 
 ###### [Documentation](docs/README.md)
 
