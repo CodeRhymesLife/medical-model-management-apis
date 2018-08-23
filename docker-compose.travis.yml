@@ -1,9 +1,7 @@
 version: "2"
 services:
   apis:
-    command:
-      yarn local:test
-      yarn local:test:coverage
+    command: yarn local:test && yarn local:test:coverage
     environment:
       TRAVIS: ${TRAVIS}
       TRAVIS_JOB_ID: ${TRAVIS_JOB_ID}
