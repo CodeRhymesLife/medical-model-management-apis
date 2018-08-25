@@ -5,53 +5,39 @@ import WinstonContext from 'winston-context';
 
 const LOG_TAG = '[medmod-apis-winston]';
 
-const WINSTON_LOGGING_CONFIG = {
-    transports: {
-        console: {
-            enabled: true,
 
-            colorize: true,
-            timestamp: false,
-            json: false,
+export interface WinstonRequestLogger extends winston.Logger {
+    req: () => WinstonRequestLogger;
+}
+
+export const logger = <WinstonRequestLogger><any>winston.createLogger({
+    transports: [
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.timestamp(),
+            ),
             handleExceptions: true,
-        },
-
-        file: {
-            enabled: true,
-
-            colorize: true,
+        }),
+        new winston.transports.File({
             filename: 'logs/apis.log',
-            timestamp: true,
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.timestamp(),
+                winston.format.json(),
+            ),
             handleExceptions: true,
-            json: true,
             maxsize: 5242880, // 5MB
-        },
-    },
-};
+        }),
+    ],
+});
 
-/**
- * Enable all transports for initial app startup
- * then disable them according to settings.
- * Add console transport.
- */
-winston.remove(winston.transports.Console);
-
-/** Console */
-if (WINSTON_LOGGING_CONFIG.transports.console.enabled) {
-    winston.add(winston.transports.Console, WINSTON_LOGGING_CONFIG.transports.console);
-}
-
-/** File transport. */
-if (WINSTON_LOGGING_CONFIG.transports.file.enabled) {
-    winston.add(winston.transports.File, WINSTON_LOGGING_CONFIG.transports.file);
-}
-
-winston.req = () => {
+logger.req = (): WinstonRequestLogger => {
     const reqLogger = contextService.get('request:req.winston');
     if (reqLogger) { return reqLogger; }
 
-    winston.warn(`${LOG_TAG} unable to retrieve logger for request. Returning static logger`);
-    return winston;
+    logger.warn(`${LOG_TAG} unable to retrieve logger for request. Returning static logger`);
+    return logger;
 };
 
 export const createReqLogger = (reqId: string, sessionId: string) => {
@@ -68,8 +54,6 @@ export const createReqLogger = (reqId: string, sessionId: string) => {
 
     return l;
 };
-
-export const logger = winston;
 
 export const setupReqLogger = (req: Request, res: Response, next: NextFunction) => {
     contextService.middleware('request')(req, res, () => {

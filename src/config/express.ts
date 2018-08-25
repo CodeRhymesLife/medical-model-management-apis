@@ -11,6 +11,7 @@ import httpStatus from 'http-status';
 import expressWinston from 'express-winston';
 import expressValidation from 'express-validation';
 import helmet from 'helmet';
+import winston from 'winston';
 
 import config from './config';
 import routes from '../index.routes';
@@ -20,7 +21,11 @@ import { logger, setupReqLogger } from './winston';
 const app = express();
 
 // Log all requests
-app.use(morgan('combined', { stream: logger.stream }));
+app.use((<any>morgan)('combined', {
+    write: function(message: string, encoding: any) {
+        logger.info(message);
+    }
+}));
 
 // Create sessions
 app.use(expressSession({
@@ -54,9 +59,11 @@ app.use(cors());
 
 // create transports for express winston
 const transports = [
-    new (logger.transports.Console)({
-        json: true,
-        colorize: true,
+    new winston.transports.Console({
+        format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.timestamp(),
+        ),
     }),
 ];
 

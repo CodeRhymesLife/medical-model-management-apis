@@ -1,8 +1,8 @@
 import { InstanceType } from 'typegoose'
-import { LoggerInstance } from 'winston'
 
 import { User } from '../routes/users/users.model'
 import { Mesh } from '../routes/meshes/meshes.model'
+import { WinstonRequestLogger } from '../config/winston';
 
 declare module "express" {
     export interface Request {
@@ -22,6 +22,6 @@ declare module "express" {
         loadedUser: InstanceType<User>
 
         /** Request logger */
-        winston: any
+        winston: WinstonRequestLogger
     }
 }

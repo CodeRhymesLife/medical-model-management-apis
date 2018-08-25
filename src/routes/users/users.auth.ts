@@ -6,7 +6,7 @@ import { InstanceType } from 'typegoose';
 import config from '../../config/config';
 import settings from '../../config/settings';
 import { logger } from '../../config/winston';
-import { User, UserModel } from './users.model.js';
+import { User, UserModel } from './users.model';
 import APIError from '../helpers/APIError';
 
 const LOG_TAG = '[Users.Auth]';
