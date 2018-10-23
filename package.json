@@ -4,7 +4,7 @@
   "description": "APIs for managing medical models",
   "repository": {
     "type": "git",
-    "url": "https://github.com/drryanjames/medical-model-management-apis.git"
+    "url": "https://github.com/coderhymeslife/medical-model-management-apis.git"
   },
   "author": "Ryan James <rcjames1004@gmail.com>",
   "license": "none",
