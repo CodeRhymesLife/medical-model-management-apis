@@ -41,7 +41,7 @@ logger.req = (): WinstonRequestLogger => {
 };
 
 export const createReqLogger = (reqId: string, sessionId: string) => {
-    const l = new WinstonContext(winston,
+    const l = new WinstonContext(logger,
         '',
         {
             reqId,
