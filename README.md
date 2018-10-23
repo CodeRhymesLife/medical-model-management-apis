@@ -1,6 +1,7 @@
 # Medical Model Management APIs
 
-[![Build Status](https://travis-ci.com/coderhymeslife/medical-model-management-apis.svg?branch=master)](https://travis-ci.com/coderhymeslife/medical-model-management-apis)
+[![Build Status](https://travis-ci.com/CodeRhymesLife/medical-model-management-apis.svg?branch=master)](https://travis-ci.com/CodeRhymesLife/medical-model-management-apis)
+[![Coveragee](https://coveralls.io/repos/github/CodeRhymesLife/medical-model-management-apis/badge.svg?branch=travis)](https://coveralls.io/github/CodeRhymesLife/medical-model-management-apis)
 
 ###### [Documentation](docs/README.md)
 
