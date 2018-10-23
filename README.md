@@ -1,6 +1,6 @@
 # Medical Model Management APIs
 
-[![Build Status](https://travis-ci.com/drryanjames/medical-model-management-apis.svg?branch=master)](https://travis-ci.com/drryanjames/medical-model-management-apis)
+[![Build Status](https://travis-ci.com/coderhymeslife/medical-model-management-apis.svg?branch=master)](https://travis-ci.com/coderhymeslife/medical-model-management-apis)
 
 ###### [Documentation](docs/README.md)
 
