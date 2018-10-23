@@ -22,9 +22,4 @@ services:
 before_script:
   - yarn setup
 
-jobs:
-  include:
-    - stage: test-js
-      script: yarn deploy:travis:js
-    - stage: test-ts
-      script: yarn deploy:travis:ts
+script: yarn deploy:travis:js
