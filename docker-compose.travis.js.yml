@@ -2,8 +2,3 @@ version: "2"
 services:
   apis:
     command: bash -c "yarn local:test:coverage:js && yarn local:test:coverage:report"
-    environment:
-      TRAVIS: ${TRAVIS}
-      TRAVIS_JOB_ID: ${TRAVIS_JOB_ID}
-      TRAVIS_BRANCH: ${TRAVIS_BRANCH}
-      TRAVIS_PULL_REQUEST: ${TRAVIS_PULL_REQUEST}
