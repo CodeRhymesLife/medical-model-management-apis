@@ -36,7 +36,7 @@
     "local:prod:start": "yarn local:build && cross-env NODE_ENV=production pm2 start build --name medical-model-manager-apis && pm2 logs medical-model-manager-apis",
     "local:prod:stop": "pm2 delete medical-model-manager-apis",
     "local:report-coverage": "coveralls < ./coverage/lcov.info",
-    "local:test:coverage": "./node_modules/.bin/nyc yarn local:test",
+    "local:test:coverage": "./node_modules/.bin/nyc yarn local:test:mocha:js",
     "local:test:coverage:report": "./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls",
     "local:test:mocha:js": "cross-env PORT=3000 NODE_ENV=test MONGO_HOST=mongodb://mongo:27017/medmod-test ./node_modules/.bin/mocha \"build/**/*.test.js\" --recursive --timeout 20000 --exit",
     "local:test:mocha:ts": "cross-env PORT=3000 NODE_ENV=test MONGO_HOST=mongodb://mongo:27017/medmod-test ./node_modules/.bin/ts-mocha \"src/**/*.test.ts\" --timeout 20000 --exit",
