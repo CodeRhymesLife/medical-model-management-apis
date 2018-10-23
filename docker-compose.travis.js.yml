@@ -1,0 +1,4 @@
+version: "2"
+services:
+  apis:
+    command: bash -c "yarn local:test:coverage:js && yarn local:test:coverage:report"
