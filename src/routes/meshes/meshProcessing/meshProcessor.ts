@@ -2,6 +2,7 @@ import { Request } from 'express';
 import kue from 'kue';
 import { InstanceType } from 'typegoose';
 
+import config from '../../../config/config';
 import { logger, createReqLogger } from '../../../config/winston';
 import { Mesh, MeshModel } from '../meshes.model';
 
@@ -24,7 +25,7 @@ class MeshProcessor {
 
     constructor() {
         // Create the queue
-        this.queue = kue.createQueue();
+        this.queue = kue.createQueue({ redis: config.redisUrl });
 
         // Begin processing meshes
         this.queue.process(QUEUE_NAME, this.process);
@@ -50,7 +51,7 @@ class MeshProcessor {
         // Saves the job. It will be enqueued soon.
         job.save();
 
-        logger.req().info(`${LOG_TAG} successfully created job for mesh '${mesh._id}' with name '${mesh.name}'`);
+        logger.req().info(`${LOG_TAG} successfully created job '${job.id}' for mesh '${mesh._id}' with name '${mesh.name}'`);
     }
 
     /** Begin processing a mesh */

@@ -25,6 +25,8 @@ const envVarsSchema = Joi.object({
         .description('Mongo DB host url'),
     MONGO_PORT: Joi.number()
         .default(27017),
+    REDIS_URL: Joi.string().required()
+        .description('Redis connection string'),
 }).unknown()
     .required();
 
@@ -41,6 +43,7 @@ const config = {
         host: envVars.MONGO_HOST,
         port: envVars.MONGO_PORT,
     },
+    redisUrl: envVars.REDIS_URL,
 };
 
 logger.info(`${LOG_TAG} successfully loaded config: ${JSON.stringify(config, undefined, 2)}`);

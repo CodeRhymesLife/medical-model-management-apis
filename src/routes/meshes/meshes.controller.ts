@@ -4,6 +4,7 @@ import multer from 'multer';
 
 import { logger } from '../../config/winston';
 import APIError from '../helpers/APIError';
+import meshProcessor from './meshProcessing/meshProcessor';
 import { Mesh, MeshModel, ResourceStates } from './meshes.model';
 import { MeshStorage } from './meshes.storage';
 
@@ -64,6 +65,9 @@ export default class MeshModelController {
             );
 
             logger.req().info(`${LOG_TAG} successfully created mesh ${createdMesh._id} for user '${req.authedUser.email}'`);
+
+            meshProcessor.enqueue(req, createdMesh);
+
             return res.status(httpStatus.CREATED).json(createdMesh);
         } catch (err) {
             logger.req().error(`${LOG_TAG} error while creating mesh '${req.body.name}'. Error: ${err}`);

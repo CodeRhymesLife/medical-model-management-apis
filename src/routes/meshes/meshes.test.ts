@@ -13,6 +13,7 @@ import {
     TestMesh
 } from '../../tests/testUtils';
 import { Mesh, MeshModel, ResourceStates } from './meshes.model';
+import meshProcessor from './meshProcessing/meshProcessor';
 import { User } from '../users/users.model';
 
 const expect = chai.expect;
@@ -30,97 +31,178 @@ describe('## Mesh APIs', () => {
         expect(responseObj.longDesc).to.equal(expected.longDesc);
     };
 
-    /** Creates test users */
+    /** Setup before any test is run */
     before(async () => {
+        // Create test users
         userOne = await createUser(testData.users.one);
         userTwo = await createUser(testData.users.two);
         return Promise.resolve();
     });
 
-    /** Deletes test users */
+    /** Clean up after all tests are run */
     after(async () => {
+        // Delete test users
         await userOne.remove();
         return userTwo.remove();
     });
 
-    /** Deletes all meshes after each test */
+    /** Cleans up after each test */
     afterEach(() => {
+        // Deletes all meshes
         return MeshModel.remove({}).exec();
     });
 
     describe('# POST /meshes', () => {
-        it('should fail validation when name is undefined', async () => {
-            const testMeshWithoutName = <TestMesh>Object.create(testData.meshes.one);
-            testMeshWithoutName.name = undefined;
 
-            // Attempt to create a mesh without a name
-            const res = await request(app)
-                .post('/meshes')
-                .set(settings.headers.idToken, testData.users.one.idToken)
-                .attachTestMesh(testMeshWithoutName)
-                .expect(httpStatus.BAD_REQUEST);
+        describe('POST /meshes with mesh processing disabled', () => {
 
-            // Validate the response message is informative
-            expect(res.body.message).to.equal('"name" is required');
+            /** Setup before any test is run */
+            before(async () => {
+                // Enter test mode
+                // DONT process jobs
+                const processMeshes = false;
+                meshProcessor.queue.testMode.enter(processMeshes);
+                return Promise.resolve();
+            });
+
+            /** Clean up after all tests are run */
+            after(async () => {
+                // Exit queue test mode
+                meshProcessor.queue.testMode.exit();
+                return Promise.resolve();
+            });
+
+            /** Cleans up after each test */
+            afterEach(() => {
+                // Removes all jobs from the queue
+                meshProcessor.queue.testMode.clear();
+                return Promise.resolve();
+            });
+
+            it('should fail validation when name is undefined', async () => {
+                const testMeshWithoutName = <TestMesh>Object.create(testData.meshes.one);
+                testMeshWithoutName.name = undefined;
+
+                // Attempt to create a mesh without a name
+                const res = await request(app)
+                    .post('/meshes')
+                    .set(settings.headers.idToken, testData.users.one.idToken)
+                    .attachTestMesh(testMeshWithoutName)
+                    .expect(httpStatus.BAD_REQUEST);
+
+                // Validate the response message is informative
+                expect(res.body.message).to.equal('"name" is required');
+                expect(meshProcessor.queue.testMode.jobs.length).to.equal(0);
+            });
+
+            it('should fail validation when name is empty', async () => {
+                const testMeshWithEmptyName = <TestMesh>Object.create(testData.meshes.one);
+                testMeshWithEmptyName.name = '';
+
+                // Attempt to create a mesh without a name
+                const res = await request(app)
+                    .post('/meshes')
+                    .set(settings.headers.idToken, testData.users.one.idToken)
+                    .attachTestMesh(testMeshWithEmptyName)
+                    .expect(httpStatus.BAD_REQUEST);
+
+                // Validate the response message is informative
+                expect(res.body.message).to.equal('"name" is not allowed to be empty');
+                expect(meshProcessor.queue.testMode.jobs.length).to.equal(0);
+            });
+
+            it('should fail validation when no files are uploaded', async () => {
+                const testMeshWithoutFile = <TestMesh>Object.create(testData.meshes.one);
+                testMeshWithoutFile.files = undefined;
+
+                // Attempt to create a mesh without a name
+                const res = await request(app)
+                    .post('/meshes')
+                    .set(settings.headers.idToken, testData.users.one.idToken)
+                    .attachTestMesh(testMeshWithoutFile)
+                    .expect(httpStatus.BAD_REQUEST);
+
+                // Validate the response message is informative
+                expect(res.body.message).to.equal('No mesh files detected');
+                expect(meshProcessor.queue.testMode.jobs.length).to.equal(0);
+            });
+
+            it('should create a new mesh', async () => {
+                // Create the mesh
+                const res = await request(app)
+                    .post('/meshes')
+                    .set(settings.headers.idToken, testData.users.one.idToken)
+                    .attachTestMesh(testData.meshes.one)
+                    .expect(httpStatus.CREATED);
+
+                // Validate the response
+                validateMeshResponse(res.body, testData.meshes.one);
+                expect(meshProcessor.queue.testMode.jobs.length).to.equal(1);
+            });
+
+            it('should create a new mesh with the same information as a mesh that already exists', async () => {
+                // Create a mesh
+                await createMesh(userOne, testData.meshes.one);
+
+                // Create a mesh with the same data
+                const res = await request(app)
+                    .post('/meshes')
+                    .set(settings.headers.idToken, testData.users.one.idToken)
+                    .attachTestMesh(testData.meshes.one)
+                    .expect(httpStatus.CREATED);
+
+                // Validate the response
+                validateMeshResponse(res.body, testData.meshes.one);
+                expect(meshProcessor.queue.testMode.jobs.length).to.equal(1);
+            });
         });
 
-        it('should fail validation when name is empty', async () => {
-            const testMeshWithEmptyName = <TestMesh>Object.create(testData.meshes.one);
-            testMeshWithEmptyName.name = '';
+        describe('POST /meshes with mesh processing enabled', () => {
+            /** Setup before any test is run */
+            before(async () => {
+                // Enter test mode
+                // DO process jobs
+                const processMeshes = true;
+                meshProcessor.queue.testMode.enter(processMeshes);
+                return Promise.resolve();
+            });
 
-            // Attempt to create a mesh without a name
-            const res = await request(app)
-                .post('/meshes')
-                .set(settings.headers.idToken, testData.users.one.idToken)
-                .attachTestMesh(testMeshWithEmptyName)
-                .expect(httpStatus.BAD_REQUEST);
+            /** Clean up after all tests are run */
+            after(async () => {
+                // Exit queue test mode
+                meshProcessor.queue.testMode.exit();
+                return Promise.resolve();
+            });
 
-            // Validate the response message is informative
-            expect(res.body.message).to.equal('"name" is not allowed to be empty');
+            /** Cleans up after each test */
+            afterEach(() => {
+                // Removes all jobs from the queue
+                meshProcessor.queue.testMode.clear();
+                return Promise.resolve();
+            });
+
+            it('should create and process new mesh', async () => {
+                // Create a mesh
+                const res = await request(app)
+                    .post('/meshes')
+                    .set(settings.headers.idToken, testData.users.one.idToken)
+                    .attachTestMesh(testData.meshes.one)
+                    .expect(httpStatus.CREATED);
+
+                // Validate the response
+                validateMeshResponse(res.body, testData.meshes.one);
+                expect(meshProcessor.queue.testMode.jobs.length).to.equal(1);
+
+                // Wait for job to complete
+                const jobCompletePromise = new Promise((fulfill, reject) => {
+                    const job = meshProcessor.queue.testMode.jobs[0];
+                    job.on('enqueue', fulfill);
+                });
+
+                // End this test after the job is complete
+                await jobCompletePromise;
+            });
         });
-
-        it('should fail validation when no files are uploaded', async () => {
-            const testMeshWithoutFile = <TestMesh>Object.create(testData.meshes.one);
-            testMeshWithoutFile.files = undefined;
-
-            // Attempt to create a mesh without a name
-            const res = await request(app)
-                .post('/meshes')
-                .set(settings.headers.idToken, testData.users.one.idToken)
-                .attachTestMesh(testMeshWithoutFile)
-                .expect(httpStatus.BAD_REQUEST);
-
-            // Validate the response message is informative
-            expect(res.body.message).to.equal('No mesh files detected');
-        });
-
-        it('should create a new mesh', async () => {
-            // Create the mesh
-            const res = await request(app)
-                .post('/meshes')
-                .set(settings.headers.idToken, testData.users.one.idToken)
-                .attachTestMesh(testData.meshes.one)
-                .expect(httpStatus.CREATED);
-
-            // Validate the response
-            validateMeshResponse(res.body, testData.meshes.one);
-        });
-
-        it('should create a new mesh with the same information as a mesh that already exists', async () => {
-            // Create a mesh
-            await createMesh(userOne, testData.meshes.one);
-
-            // Create a mesh with the same data
-            const res = await request(app)
-                .post('/meshes')
-                .set(settings.headers.idToken, testData.users.one.idToken)
-                .attachTestMesh(testData.meshes.one)
-                .expect(httpStatus.CREATED);
-
-            // Validate the response
-            validateMeshResponse(res.body, testData.meshes.one);
-        });
-
     });
 
     describe('# GET /meshes', () => {

@@ -8,6 +8,7 @@ services:
       - "3000:3000"
     links:
       - mongo
+      - redis
     command: yarn local:prod:start
   mongo:
     container_name: mongo
@@ -16,3 +17,13 @@ services:
       - ./data:/data/db
     ports:
       - "27017:27017"
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
